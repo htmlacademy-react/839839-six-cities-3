@@ -1,11 +1,22 @@
 import Header from '../../component/header/header';
 import PlaceCard from '../../component/place-card/place-card';
 
-type MainScreenProps = {
-  offersCount: number;
+type OffersType = {
+  id: string;
+  title: string;
+  type: string;
+  price: number;
+  previewImage: string;
+  isFavorite: boolean;
+  isPremium: boolean;
 }
 
-function MainScreen({offersCount}: MainScreenProps): JSX.Element {
+type MainScreenProps = {
+  offersCount: number;
+  offersData: OffersType[];
+}
+
+function MainScreen({offersCount, offersData}: MainScreenProps): JSX.Element {
   return (
     <div className="page page--gray page--main">
       <Header />
@@ -61,7 +72,7 @@ function MainScreen({offersCount}: MainScreenProps): JSX.Element {
                     <use xlinkHref="#icon-arrow-select"></use>
                   </svg>
                 </span>
-                <ul className="places__options places__options--custom places__options--opened">
+                <ul className="places__options places__options--custom">
                   <li className="places__option places__option--active" tabIndex={0}>Popular</li>
                   <li className="places__option" tabIndex={0}>Price: low to high</li>
                   <li className="places__option" tabIndex={0}>Price: high to low</li>
@@ -69,11 +80,17 @@ function MainScreen({offersCount}: MainScreenProps): JSX.Element {
                 </ul>
               </form>
               <div className="cities__places-list places__list tabs__content">
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
+                {offersData.map((offer) => (
+                  <PlaceCard
+                    title={offer.title}
+                    type={offer.type}
+                    price={offer.price}
+                    previewImage={offer.previewImage}
+                    isFavorite={offer.isFavorite}
+                    isPremium={offer.isPremium}
+                    key={offer.id}
+                  />
+                ))}
               </div>
             </section>
             <div className="cities__right-section">

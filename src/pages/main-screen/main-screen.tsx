@@ -1,7 +1,7 @@
 import Header from '../../component/header/header';
 import PlaceCard from '../../component/place-card/place-card';
 import { DestinationCities } from '../../const';
-import LocationItem from './components/location-item';
+import LocationItem from '../../component/location-item/location-item';
 
 type OffersType = {
   id: string;

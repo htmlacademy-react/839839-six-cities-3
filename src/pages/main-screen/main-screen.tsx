@@ -1,5 +1,7 @@
 import Header from '../../component/header/header';
 import PlaceCard from '../../component/place-card/place-card';
+import { DestinationCities } from '../../const';
+import LocationItem from './components/location-item';
 
 type OffersType = {
   id: string;
@@ -26,36 +28,11 @@ function MainScreen({offersCount, offersData}: MainScreenProps): JSX.Element {
         <div className="tabs">
           <section className="locations container">
             <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item tabs__item--active">
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
+              {
+                DestinationCities.map((dest) => (
+                  <LocationItem location={dest} key={dest}/>
+                ))
+              }
             </ul>
           </section>
         </div>

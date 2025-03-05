@@ -10,3 +10,10 @@ export const DestinationCities = [
   'Hamburg',
   'Dusseldorf',
 ];
+
+export enum AppRoute {
+  Root = '/',
+  Login = 'login',
+  Favorites = 'favorites',
+  Offer = 'offer/:id'
+}

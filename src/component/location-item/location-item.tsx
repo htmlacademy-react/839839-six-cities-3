@@ -1,3 +1,5 @@
+import { NavLink } from 'react-router-dom';
+
 type LocationItemProps = {
   location: string;
 }
@@ -5,9 +7,9 @@ type LocationItemProps = {
 function LocationItem ({location}: LocationItemProps): JSX.Element{
   return (
     <li className="locations__item">
-      <a className="locations__item-link tabs__item " href="#">
+      <NavLink className="locations__item-link tabs__item " to="#">
         <span>{location}</span>
-      </a>
+      </NavLink>
     </li>
   );
 }

@@ -1,21 +1,12 @@
 import Header from '../../component/header/header';
-import PlaceCard from '../../component/place-card/place-card';
 import { DestinationCities } from '../../const';
 import LocationItem from '../../component/location-item/location-item';
-
-type OffersType = {
-  id: string;
-  title: string;
-  type: string;
-  price: number;
-  previewImage: string;
-  isFavorite: boolean;
-  isPremium: boolean;
-}
+import { OffersType } from '../../types/offers';
+import PlaceList from '../../component/place-list/place-list';
 
 type MainScreenProps = {
   offersCount: number;
-  offersData: OffersType[];
+  offersData: OffersType;
 }
 
 function MainScreen({offersCount, offersData}: MainScreenProps): JSX.Element {
@@ -56,19 +47,7 @@ function MainScreen({offersCount, offersData}: MainScreenProps): JSX.Element {
                   <li className="places__option" tabIndex={0}>Top rated first</li>
                 </ul>
               </form>
-              <div className="cities__places-list places__list tabs__content">
-                {offersData.map((offer) => (
-                  <PlaceCard
-                    title={offer.title}
-                    type={offer.type}
-                    price={offer.price}
-                    previewImage={offer.previewImage}
-                    isFavorite={offer.isFavorite}
-                    isPremium={offer.isPremium}
-                    key={offer.id}
-                  />
-                ))}
-              </div>
+              <PlaceList offersData={offersData}/>
             </section>
             <div className="cities__right-section">
               <section className="cities__map map"></section>

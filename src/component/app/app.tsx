@@ -22,8 +22,8 @@ function App({offersCount, offersData, commentsData}: AppScreenProps): JSX.Eleme
         <Route path={AppRoute.Root} element={<MainScreen offersCount={offersCount} offersData={offersData}/>}/>
         <Route path={AppRoute.Login} element={<LoginScreen />}/>
         <Route path={AppRoute.Favorites} element={
-          <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth}>
-            <FavoritesScreen />
+          <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
+            <FavoritesScreen offersData={offersData.filter((offer) => offer.isFavorite)}/>
           </PrivateRoute>
         }
         />

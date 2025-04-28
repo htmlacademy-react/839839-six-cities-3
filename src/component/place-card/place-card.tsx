@@ -9,6 +9,7 @@ type PlaceCardProps = {
 
 function PlaceCard({offer}: PlaceCardProps): JSX.Element {
   const location = useLocation();
+  const offerLink = `${AppRoute.Offer}/${offer.id}`;
 
   let articleClassName = 'place-card';
   let divImageClassName = 'place-card__image-wrapper';
@@ -37,7 +38,7 @@ function PlaceCard({offer}: PlaceCardProps): JSX.Element {
           <span>Premium</span>
         </div> : ''}
       <div className={divImageClassName}>
-        <Link to={AppRoute.Offer}>
+        <Link to={offerLink}>
           <img className="place-card__image" src={offer.previewImage} width={imageWidth} height={imageHeight} alt="Place image" />
         </Link>
       </div>
@@ -67,7 +68,7 @@ function PlaceCard({offer}: PlaceCardProps): JSX.Element {
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={AppRoute.Offer}>{offer.title}</Link>
+          <Link to={offerLink}>{offer.title}</Link>
         </h2>
         <p className="place-card__type">{offer.type}</p>
       </div>

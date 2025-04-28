@@ -15,7 +15,7 @@ export enum AppRoute {
   Root = '/',
   Login = '/login',
   Favorites = '/favorites',
-  Offer = '/offer/:id'
+  Offer = '/offer'
 }
 
 export enum AuthorizationStatus {

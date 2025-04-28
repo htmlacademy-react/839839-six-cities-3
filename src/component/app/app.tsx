@@ -11,21 +11,22 @@ import { OffersType } from '../../types/offers';
 type AppScreenProps = {
   offersCount: number;
   offersData: OffersType;
+  authorizationStatus: AuthorizationStatus;
 }
 
-function App({offersCount, offersData}: AppScreenProps): JSX.Element {
+function App({offersCount, offersData, authorizationStatus}: AppScreenProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
         <Route path={AppRoute.Root} element={<MainScreen offersCount={offersCount} offersData={offersData}/>}/>
         <Route path={AppRoute.Login} element={<LoginScreen />}/>
         <Route path={AppRoute.Favorites} element={
-          <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
+          <PrivateRoute authorizationStatus={authorizationStatus}>
             <FavoritesScreen offersData={offersData.filter((offer) => offer.isFavorite)}/>
           </PrivateRoute>
         }
         />
-        <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen offersData={offersData} authorizationStatus={AuthorizationStatus.Auth}/>}/>
+        <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen offersData={offersData} authorizationStatus={authorizationStatus}/>}/>
         <Route path='*' element={<NotFoundScreen />}/>
       </Routes>
     </BrowserRouter>

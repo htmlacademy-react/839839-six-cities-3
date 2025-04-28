@@ -7,15 +7,13 @@ import OfferScreen from '../../pages/offer-screen/offer-screen';
 import NotFoundScreen from '../../pages/not-found-screen/not-found-screen';
 import PrivateRoute from '../private-route/private-route';
 import { OffersType } from '../../types/offers';
-import { CommentsType } from '../../types/comments';
 
 type AppScreenProps = {
   offersCount: number;
   offersData: OffersType;
-  commentsData: CommentsType;
 }
 
-function App({offersCount, offersData, commentsData}: AppScreenProps): JSX.Element {
+function App({offersCount, offersData}: AppScreenProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>

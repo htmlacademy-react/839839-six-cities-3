@@ -1,4 +1,4 @@
-const getRatingPercentage = (rating: number, maxRating: number = 5): number =>
-  (rating / maxRating) * 100;
+const getRatingPercentage = (rating: number): number =>
+  Math.round(rating) * 20;
 
 export {getRatingPercentage};

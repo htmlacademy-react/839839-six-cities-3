@@ -25,7 +25,7 @@ function App({offersCount, offersData}: AppScreenProps): JSX.Element {
           </PrivateRoute>
         }
         />
-        <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen />}/>
+        <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen offersData={offersData} authorizationStatus={AuthorizationStatus.Auth}/>}/>
         <Route path='*' element={<NotFoundScreen />}/>
       </Routes>
     </BrowserRouter>

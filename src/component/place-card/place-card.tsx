@@ -21,14 +21,18 @@ function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
     case AppRoute.Root:
       articleClassName = `cities__card ${articleClassName}`;
       divImageClassName = `cities__image-wrapper ${divImageClassName}`;
-      imageWidth = 260;
-      imageHeight = 200;
       break;
     case AppRoute.Favorites:
       articleClassName = `favorites__card ${articleClassName}`;
       divImageClassName = `favorites__image-wrapper ${divImageClassName}`;
       imageWidth = 150;
       imageHeight = 110;
+      break;
+    default:
+      if (location.pathname.startsWith(`${AppRoute.Offer}/`)) {
+        articleClassName = `near-places__card ${articleClassName}`;
+        divImageClassName = `near-places__image-wrapper ${divImageClassName}`;
+      }
       break;
   }
 

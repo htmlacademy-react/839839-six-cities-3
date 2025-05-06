@@ -5,11 +5,10 @@ import { OfferType } from '../../types/offers';
 
 type PlaceCardProps = {
   offer: OfferType;
-  onMouseOver?: (offerId: string) => void;
-  onMouseLeave?: () => void;
+  onCardHover?: (offerId: string) => void;
 }
 
-function PlaceCard({offer, onMouseOver, onMouseLeave}: PlaceCardProps): JSX.Element {
+function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
   const location = useLocation();
   const offerLink = `${AppRoute.Offer}/${offer.id}`;
 
@@ -36,8 +35,7 @@ function PlaceCard({offer, onMouseOver, onMouseLeave}: PlaceCardProps): JSX.Elem
   return (
     <article
       className={articleClassName}
-      onMouseOver={() => onMouseOver?.(offer.id)}
-      onMouseLeave={() => onMouseLeave?.()}
+      onMouseEnter={() => onCardHover?.(offer.id)}
     >
       {offer.isPremium ?
         <div className="place-card__mark">

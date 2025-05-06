@@ -1,15 +1,30 @@
-import Header from '../../component/header/header';
+import { useState } from 'react';
 import { DestinationCities } from '../../const';
+import { OffersType, OfferType } from '../../types/offers';
+import Header from '../../component/header/header';
 import LocationItem from '../../component/location-item/location-item';
-import { OffersType } from '../../types/offers';
 import PlaceList from '../../component/place-list/place-list';
+import Map from '../../component/map/map';
 
 type MainScreenProps = {
-  offersCount: number;
   offersData: OffersType;
 }
 
-function MainScreen({offersCount, offersData}: MainScreenProps): JSX.Element {
+function MainScreen({offersData}: MainScreenProps): JSX.Element {
+  const [selectedCityName, setSelectedCityName] = useState('Amsterdam');
+  const [selectedOffer, setSelectedOffer] = useState<OfferType | undefined>(undefined);
+  const selectedCityOffers = offersData.filter((offer) => offer.city.name === selectedCityName);
+  const selectedCity = selectedCityOffers[0].city;
+
+  const handleLocationItemClick = (cityName: string) => {
+    setSelectedCityName(cityName);
+  };
+
+  const handleListItemHover = (offerId: string) => {
+    const currentOffer = offersData.find((offer) => offer.id === offerId);
+    setSelectedOffer(currentOffer);
+  };
+
   return (
     <div className="page page--gray page--main">
       <Header />
@@ -21,7 +36,12 @@ function MainScreen({offersCount, offersData}: MainScreenProps): JSX.Element {
             <ul className="locations__list tabs__list">
               {
                 DestinationCities.map((dest) => (
-                  <LocationItem location={dest} key={dest}/>
+                  <LocationItem
+                    location={dest}
+                    key={dest}
+                    selectedCityName={selectedCityName}
+                    onLocationItemClick={handleLocationItemClick}
+                  />
                 ))
               }
             </ul>
@@ -31,7 +51,7 @@ function MainScreen({offersCount, offersData}: MainScreenProps): JSX.Element {
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{offersCount} places to stay in Amsterdam</b>
+              <b className="places__found">{selectedCityOffers.length} places to stay in {selectedCityName}</b>
               <form className="places__sorting" action="#" method="get">
                 <span className="places__sorting-caption">Sort by</span>
                 <span className="places__sorting-type" tabIndex={0}>
@@ -47,10 +67,12 @@ function MainScreen({offersCount, offersData}: MainScreenProps): JSX.Element {
                   <li className="places__option" tabIndex={0}>Top rated first</li>
                 </ul>
               </form>
-              <PlaceList offersData={offersData}/>
+              <PlaceList offersData={selectedCityOffers} onListItemHover={handleListItemHover}/>
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              <section className="cities__map map">
+                <Map location={selectedCity.location} points={selectedCityOffers} selectedPoint={selectedOffer}/>
+              </section>
             </div>
           </div>
         </div>

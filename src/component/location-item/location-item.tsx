@@ -1,15 +1,28 @@
-import { NavLink } from 'react-router-dom';
+import { MouseEvent } from 'react';
+import { Link } from 'react-router-dom';
+import { AppRoute } from '../../const';
 
 type LocationItemProps = {
   location: string;
+  selectedCityName: string;
+  onLocationItemClick: (cityName: string) => void;
 }
 
-function LocationItem ({location}: LocationItemProps): JSX.Element{
+function LocationItem ({location, selectedCityName, onLocationItemClick}: LocationItemProps): JSX.Element {
+  const handleLocationItemClick = (evt: MouseEvent<HTMLAnchorElement>) => {
+    evt.preventDefault();
+    onLocationItemClick(location);
+  };
+
   return (
     <li className="locations__item">
-      <NavLink className="locations__item-link tabs__item " to="#">
+      <Link
+        className={`locations__item-link tabs__item ${location === selectedCityName ? 'tabs__item--active' : ''}`}
+        to={AppRoute.Root}
+        onClick={handleLocationItemClick}
+      >
         <span>{location}</span>
-      </NavLink>
+      </Link>
     </li>
   );
 }

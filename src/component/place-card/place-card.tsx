@@ -5,11 +5,10 @@ import { OfferType } from '../../types/offers';
 
 type PlaceCardProps = {
   offer: OfferType;
-  onMouseOver?: (offerId: string) => void;
-  onMouseLeave?: () => void;
+  onCardHover?: (offerId: string) => void;
 }
 
-function PlaceCard({offer, onMouseOver, onMouseLeave}: PlaceCardProps): JSX.Element {
+function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
   const location = useLocation();
   const offerLink = `${AppRoute.Offer}/${offer.id}`;
 
@@ -22,8 +21,6 @@ function PlaceCard({offer, onMouseOver, onMouseLeave}: PlaceCardProps): JSX.Elem
     case AppRoute.Root:
       articleClassName = `cities__card ${articleClassName}`;
       divImageClassName = `cities__image-wrapper ${divImageClassName}`;
-      imageWidth = 260;
-      imageHeight = 200;
       break;
     case AppRoute.Favorites:
       articleClassName = `favorites__card ${articleClassName}`;
@@ -31,13 +28,18 @@ function PlaceCard({offer, onMouseOver, onMouseLeave}: PlaceCardProps): JSX.Elem
       imageWidth = 150;
       imageHeight = 110;
       break;
+    default:
+      if (location.pathname.startsWith(`${AppRoute.Offer}/`)) {
+        articleClassName = `near-places__card ${articleClassName}`;
+        divImageClassName = `near-places__image-wrapper ${divImageClassName}`;
+      }
+      break;
   }
 
   return (
     <article
       className={articleClassName}
-      onMouseOver={() => onMouseOver?.(offer.id)}
-      onMouseLeave={() => onMouseLeave?.()}
+      onMouseEnter={() => onCardHover?.(offer.id)}
     >
       {offer.isPremium ?
         <div className="place-card__mark">

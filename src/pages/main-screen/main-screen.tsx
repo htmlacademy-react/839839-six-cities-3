@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { DestinationCities } from '../../const';
 import { OffersType, OfferType } from '../../types/offers';
 import Header from '../../component/header/header';
-import LocationItem from '../../component/location-item/location-item';
 import PlaceList from '../../component/place-list/place-list';
 import Map from '../../component/map/map';
+import CitiesList from '../../component/cities-list/cities-list';
 
 type MainScreenProps = {
   offersData: OffersType;
@@ -31,22 +31,11 @@ function MainScreen({offersData}: MainScreenProps): JSX.Element {
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
-        <div className="tabs">
-          <section className="locations container">
-            <ul className="locations__list tabs__list">
-              {
-                DestinationCities.map((dest) => (
-                  <LocationItem
-                    location={dest}
-                    key={dest}
-                    selectedCityName={selectedCityName}
-                    onLocationItemClick={handleLocationItemClick}
-                  />
-                ))
-              }
-            </ul>
-          </section>
-        </div>
+        <CitiesList
+          cities={DestinationCities}
+          selectedCityName={selectedCityName}
+          onLocationItemClick={handleLocationItemClick}
+        />
         <div className="cities">
           <div className="cities__places-container container">
             <section className="cities__places places">

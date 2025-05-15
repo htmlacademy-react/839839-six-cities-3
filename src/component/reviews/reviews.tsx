@@ -9,7 +9,7 @@ type ReviewsProps = {
   authorizationStatus: AuthorizationStatus;
 }
 
-function Reviews ({offerId, authorizationStatus}: ReviewsProps): JSX.Element {
+function Reviews({offerId, authorizationStatus}: ReviewsProps): JSX.Element {
   const commentsOffers: CommentsType = comments.filter((comment) => comment.id === offerId);
   return (
     <section className="offer__reviews reviews">

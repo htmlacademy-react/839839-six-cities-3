@@ -7,13 +7,13 @@ import NotFoundScreen from '../not-found-screen/not-found-screen';
 import Reviews from '../../component/reviews/reviews';
 import Map from '../../component/map/map';
 import PlaceCard from '../../component/place-card/place-card';
+import { useAppSelector } from '../../hooks';
 
 type OfferScreenProps = {
-  offersData: OffersType;
   authorizationStatus: AuthorizationStatus;
 }
 
-function getNearbyOffers (offer: OfferType, offersData: OffersType): OffersType {
+function getNearbyOffers(offer: OfferType, offersData: OffersType): OffersType {
   const nearbyOffers: OffersType = [];
 
   for (let i = 0; i < offersData.length; i++) {
@@ -29,7 +29,8 @@ function getNearbyOffers (offer: OfferType, offersData: OffersType): OffersType 
   return nearbyOffers;
 }
 
-function OfferScreen ({offersData, authorizationStatus}: OfferScreenProps): JSX.Element {
+function OfferScreen ({authorizationStatus}: OfferScreenProps): JSX.Element {
+  const offersData = useAppSelector((state) => state.offers);
   const params = useParams();
   const currentOffer = offersData.find((item) => item.id === params.id);
 

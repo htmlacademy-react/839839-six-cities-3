@@ -17,13 +17,13 @@ function App({authorizationStatus}: AppScreenProps): JSX.Element {
       <Routes>
         <Route path={AppRoute.Root} element={<MainScreen />}/>
         <Route path={AppRoute.Login} element={<LoginScreen />}/>
-        {/* <Route path={AppRoute.Favorites} element={
+        <Route path={AppRoute.Favorites} element={
           <PrivateRoute authorizationStatus={authorizationStatus}>
-            <FavoritesScreen offersData={offersData.filter((offer) => offer.isFavorite)}/>
+            <FavoritesScreen />
           </PrivateRoute>
         }
-        /> */}
-        {/* <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen offersData={offersData} authorizationStatus={authorizationStatus}/>}/> */}
+        />
+        <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen authorizationStatus={authorizationStatus}/>}/>
         <Route path='*' element={<NotFoundScreen />}/>
       </Routes>
     </BrowserRouter>

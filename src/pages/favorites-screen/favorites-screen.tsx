@@ -1,14 +1,12 @@
 import { Link } from 'react-router-dom';
 import Header from '../../component/header/header';
 import { AppRoute } from '../../const';
-import { OffersType } from '../../types/offers';
 import FavoritesList from '../../component/favorites-list/favorites-list';
+import { useAppSelector } from '../../hooks';
 
-type FavoritesScreenProps = {
-  offersData: OffersType;
-}
-
-function FavoritesScreen ({offersData}: FavoritesScreenProps): JSX.Element {
+function FavoritesScreen(): JSX.Element {
+  const offersData = useAppSelector((state) => state.offers);
+  const favoriteOffers = offersData.filter((offer) => offer.isFavorite);
   return (
     <div className="page">
       <Header />
@@ -17,7 +15,7 @@ function FavoritesScreen ({offersData}: FavoritesScreenProps): JSX.Element {
         <div className="page__favorites-container container">
           <section className="favorites">
             <h1 className="favorites__title">Saved listing</h1>
-            <FavoritesList offersData={offersData}/>
+            <FavoritesList favoriteOffers={favoriteOffers}/>
           </section>
         </div>
       </main>

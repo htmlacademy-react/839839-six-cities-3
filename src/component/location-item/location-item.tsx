@@ -1,17 +1,20 @@
 import { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { selectCity } from '../../store/action';
 
 type LocationItemProps = {
   location: string;
-  selectedCityName: string;
-  onLocationItemClick: (cityName: string) => void;
 }
 
-function LocationItem ({location, selectedCityName, onLocationItemClick}: LocationItemProps): JSX.Element {
+function LocationItem({location}: LocationItemProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  const selectedCityName = useAppSelector((state) => state.cityName);
+
   const handleLocationItemClick = (evt: MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
-    onLocationItemClick(location);
+    dispatch(selectCity(location));
   };
 
   return (

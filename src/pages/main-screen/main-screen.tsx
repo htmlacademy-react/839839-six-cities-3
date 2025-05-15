@@ -1,27 +1,23 @@
 import { useState } from 'react';
-import { DestinationCities } from '../../const';
-import { OffersType, OfferType } from '../../types/offers';
+import { OfferType } from '../../types/offers';
 import Header from '../../component/header/header';
 import PlaceList from '../../component/place-list/place-list';
 import Map from '../../component/map/map';
 import CitiesList from '../../component/cities-list/cities-list';
+import { useAppSelector } from '../../hooks';
 
-type MainScreenProps = {
-  offersData: OffersType;
-}
 
-function MainScreen({offersData}: MainScreenProps): JSX.Element {
-  const [selectedCityName, setSelectedCityName] = useState('Amsterdam');
-  const [selectedOffer, setSelectedOffer] = useState<OfferType | undefined>(undefined);
+function MainScreen(): JSX.Element {
+  const selectedCityName = useAppSelector((state) => state.cityName);
+  const offersData = useAppSelector((state) => state.offers);
+
   const selectedCityOffers = offersData.filter((offer) => offer.city.name === selectedCityName);
   const selectedCity = selectedCityOffers[0].city;
 
-  const handleLocationItemClick = (cityName: string) => {
-    setSelectedCityName(cityName);
-  };
+  const [selectedOffer, setSelectedOffer] = useState<OfferType | undefined>(undefined);
 
   const handleListItemHover = (offerId: string) => {
-    const currentOffer = offersData.find((offer) => offer.id === offerId);
+    const currentOffer = selectedCityOffers.find((offer) => offer.id === offerId);
     setSelectedOffer(currentOffer);
   };
 
@@ -31,11 +27,7 @@ function MainScreen({offersData}: MainScreenProps): JSX.Element {
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
-        <CitiesList
-          cities={DestinationCities}
-          selectedCityName={selectedCityName}
-          onLocationItemClick={handleLocationItemClick}
-        />
+        <CitiesList />
         <div className="cities">
           <div className="cities__places-container container">
             <section className="cities__places places">
@@ -56,11 +48,18 @@ function MainScreen({offersData}: MainScreenProps): JSX.Element {
                   <li className="places__option" tabIndex={0}>Top rated first</li>
                 </ul>
               </form>
-              <PlaceList offersData={selectedCityOffers} onListItemHover={handleListItemHover}/>
+              <PlaceList
+                offersData={selectedCityOffers}
+                onListItemHover={handleListItemHover}
+              />
             </section>
             <div className="cities__right-section">
               <section className="cities__map map">
-                <Map location={selectedCity.location} points={selectedCityOffers} selectedPoint={selectedOffer}/>
+                <Map
+                  location={selectedCity.location}
+                  points={selectedCityOffers}
+                  selectedPoint={selectedOffer}
+                />
               </section>
             </div>
           </div>

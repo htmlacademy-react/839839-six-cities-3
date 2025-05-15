@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './component/app/app';
 import { AuthorizationStatus } from './const';
-import { offers } from './mocks/offers';
 import { Provider } from 'react-redux';
 import { store } from './store';
 
@@ -16,7 +15,6 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <App
-        offersData={offers}
         authorizationStatus={isAuth}
       />
     </Provider>

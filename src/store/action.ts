@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
+import { SortOrder } from '../const';
 
 const selectCity = createAction<string>('selectCity');
-const filterOffers = createAction('filterOffers');
+const selectSortOrder = createAction<SortOrder>('selectSortOrder');
 
-export { selectCity, filterOffers };
+export { selectCity, selectSortOrder };

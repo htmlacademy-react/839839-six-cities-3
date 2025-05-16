@@ -4,17 +4,41 @@ import Header from '../../component/header/header';
 import PlaceList from '../../component/place-list/place-list';
 import Map from '../../component/map/map';
 import CitiesList from '../../component/cities-list/cities-list';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import PlacesSorting from '../../component/places-sorting/places-sorting';
+import { SortOrder } from '../../const';
+import { selectSortOrder } from '../../store/action';
 
 
 function MainScreen(): JSX.Element {
+  const dispatch = useAppDispatch();
   const selectedCityName = useAppSelector((state) => state.cityName);
   const offersData = useAppSelector((state) => state.offers);
+  const currentSort = useAppSelector((state) => state.sortOrder);
+  const [selectedOffer, setSelectedOffer] = useState<OfferType | undefined>(undefined);
 
   const selectedCityOffers = offersData.filter((offer) => offer.city.name === selectedCityName);
   const selectedCity = selectedCityOffers[0].city;
 
-  const [selectedOffer, setSelectedOffer] = useState<OfferType | undefined>(undefined);
+  const getSortedOffers = () => {
+    switch (currentSort) {
+      case SortOrder.PriceLowToHigh:
+        return [...selectedCityOffers].sort((a, b) => a.price - b.price);
+      case SortOrder.PriceHighToLow:
+        return [...selectedCityOffers].sort((a, b) => b.price - a.price);
+      case SortOrder.TopRatedFirst:
+        return [...selectedCityOffers].sort((a, b) => b.rating - a.rating);
+      default:
+        return selectedCityOffers;
+    }
+  };
+
+  const sortedOffers = getSortedOffers();
+
+  const handleSortChange = (sortType: SortOrder) => {
+    dispatch(selectSortOrder(sortType));
+  };
+
 
   const handleListItemHover = (offerId: string) => {
     const currentOffer = selectedCityOffers.find((offer) => offer.id === offerId);
@@ -33,23 +57,13 @@ function MainScreen(): JSX.Element {
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
               <b className="places__found">{selectedCityOffers.length} place{selectedCityOffers.length > 1 && 's'} to stay in {selectedCityName}</b>
-              <form className="places__sorting" action="#" method="get">
-                <span className="places__sorting-caption">Sort by</span>
-                <span className="places__sorting-type" tabIndex={0}>
-                  Popular
-                  <svg className="places__sorting-arrow" width="7" height="4">
-                    <use xlinkHref="#icon-arrow-select"></use>
-                  </svg>
-                </span>
-                <ul className="places__options places__options--custom">
-                  <li className="places__option places__option--active" tabIndex={0}>Popular</li>
-                  <li className="places__option" tabIndex={0}>Price: low to high</li>
-                  <li className="places__option" tabIndex={0}>Price: high to low</li>
-                  <li className="places__option" tabIndex={0}>Top rated first</li>
-                </ul>
-              </form>
+              <PlacesSorting
+                currentSort={currentSort}
+                onSortChange={handleSortChange}
+              />
+
               <PlaceList
-                offersData={selectedCityOffers}
+                offersData={sortedOffers}
                 onListItemHover={handleListItemHover}
               />
             </section>

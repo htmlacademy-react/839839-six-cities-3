@@ -29,3 +29,10 @@ export enum UrlMarker {
   Default = './img/pin.svg',
   Current = './img/pin-active.svg'
 }
+
+export enum SortOrder {
+  Popular = 'Popular',
+  PriceLowToHigh = 'Price: low to high',
+  PriceHighToLow = 'Price: high to low',
+  TopRatedFirst = 'Top rated first',
+}

@@ -35,7 +35,7 @@ const RATINGS: RatingType[] = [
   },
 ];
 
-function RatingItem ({rating, onStarClick}: RatingItemProps): JSX.Element {
+function RatingItem({rating, onStarClick}: RatingItemProps): JSX.Element {
   return (
     <>
       <input
@@ -59,7 +59,7 @@ function RatingItem ({rating, onStarClick}: RatingItemProps): JSX.Element {
   );
 }
 
-function ReviewsForm (): JSX.Element {
+function ReviewsForm(): JSX.Element {
   const [review, setReview] = useState({
     rating: 0,
     review: ''

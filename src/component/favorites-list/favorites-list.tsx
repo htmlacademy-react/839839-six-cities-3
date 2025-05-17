@@ -4,7 +4,7 @@ import { OffersType } from '../../types/offers';
 import PlaceCard from '../place-card/place-card';
 
 type FavoritesListProps = {
-  offersData: OffersType;
+  favoriteOffers: OffersType;
 }
 
 type FavoritesLocationsItemsProps = {
@@ -12,7 +12,7 @@ type FavoritesLocationsItemsProps = {
   city: string;
 }
 
-function FavoritesPlaces ({offersData, city}: FavoritesLocationsItemsProps) {
+function FavoritesPlaces({offersData, city}: FavoritesLocationsItemsProps) {
   return (
     offersData.filter((offer) => offer.city.name === city).map((offer) => (
       <PlaceCard
@@ -22,7 +22,7 @@ function FavoritesPlaces ({offersData, city}: FavoritesLocationsItemsProps) {
   );
 }
 
-function FavoritesLocationsItems ({offersData, city}: FavoritesLocationsItemsProps) {
+function FavoritesLocationsItems({offersData, city}: FavoritesLocationsItemsProps) {
   const isOffer = offersData.find((offer) => offer.city.name === city);
   if (isOffer) {
     return (
@@ -42,10 +42,10 @@ function FavoritesLocationsItems ({offersData, city}: FavoritesLocationsItemsPro
   }
 }
 
-function FavoritesList ({offersData}: FavoritesListProps): JSX.Element {
+function FavoritesList({favoriteOffers}: FavoritesListProps): JSX.Element {
   return (
     <ul className="favorites__list">
-      {DestinationCities.map((city) => <FavoritesLocationsItems key={city} offersData={offersData} city={city}/>)}
+      {DestinationCities.map((city) => <FavoritesLocationsItems key={city} offersData={favoriteOffers} city={city}/>)}
     </ul>
   );
 }

@@ -6,7 +6,7 @@ type ReviewsItemProps = {
   comment: CommentType;
 }
 
-function ReviewsItem ({comment}: ReviewsItemProps): JSX.Element {
+function ReviewsItem({comment}: ReviewsItemProps): JSX.Element {
   const dateReview = new Date(comment.date);
   const nameMonth = dateReview.toLocaleString('en-US', { month: 'long' });
   const fullYear = dateReview.getFullYear();

@@ -1,27 +1,47 @@
 import { useState } from 'react';
-import { DestinationCities } from '../../const';
-import { OffersType, OfferType } from '../../types/offers';
+import { OfferType } from '../../types/offers';
 import Header from '../../component/header/header';
-import LocationItem from '../../component/location-item/location-item';
 import PlaceList from '../../component/place-list/place-list';
 import Map from '../../component/map/map';
+import CitiesList from '../../component/cities-list/cities-list';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import PlacesSorting from '../../component/places-sorting/places-sorting';
+import { SortOrder } from '../../const';
+import { selectSortOrder } from '../../store/action';
 
-type MainScreenProps = {
-  offersData: OffersType;
-}
 
-function MainScreen({offersData}: MainScreenProps): JSX.Element {
-  const [selectedCityName, setSelectedCityName] = useState('Amsterdam');
+function MainScreen(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const selectedCityName = useAppSelector((state) => state.cityName);
+  const offersData = useAppSelector((state) => state.offers);
+  const currentSort = useAppSelector((state) => state.sortOrder);
   const [selectedOffer, setSelectedOffer] = useState<OfferType | undefined>(undefined);
+
   const selectedCityOffers = offersData.filter((offer) => offer.city.name === selectedCityName);
   const selectedCity = selectedCityOffers[0].city;
 
-  const handleLocationItemClick = (cityName: string) => {
-    setSelectedCityName(cityName);
+  const getSortedOffers = () => {
+    switch (currentSort) {
+      case SortOrder.PriceLowToHigh:
+        return [...selectedCityOffers].sort((a, b) => a.price - b.price);
+      case SortOrder.PriceHighToLow:
+        return [...selectedCityOffers].sort((a, b) => b.price - a.price);
+      case SortOrder.TopRatedFirst:
+        return [...selectedCityOffers].sort((a, b) => b.rating - a.rating);
+      default:
+        return selectedCityOffers;
+    }
   };
 
+  const sortedOffers = getSortedOffers();
+
+  const handleSortChange = (sortType: SortOrder) => {
+    dispatch(selectSortOrder(sortType));
+  };
+
+
   const handleListItemHover = (offerId: string) => {
-    const currentOffer = offersData.find((offer) => offer.id === offerId);
+    const currentOffer = selectedCityOffers.find((offer) => offer.id === offerId);
     setSelectedOffer(currentOffer);
   };
 
@@ -31,47 +51,29 @@ function MainScreen({offersData}: MainScreenProps): JSX.Element {
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
-        <div className="tabs">
-          <section className="locations container">
-            <ul className="locations__list tabs__list">
-              {
-                DestinationCities.map((dest) => (
-                  <LocationItem
-                    location={dest}
-                    key={dest}
-                    selectedCityName={selectedCityName}
-                    onLocationItemClick={handleLocationItemClick}
-                  />
-                ))
-              }
-            </ul>
-          </section>
-        </div>
+        <CitiesList />
         <div className="cities">
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{selectedCityOffers.length} places to stay in {selectedCityName}</b>
-              <form className="places__sorting" action="#" method="get">
-                <span className="places__sorting-caption">Sort by</span>
-                <span className="places__sorting-type" tabIndex={0}>
-                  Popular
-                  <svg className="places__sorting-arrow" width="7" height="4">
-                    <use xlinkHref="#icon-arrow-select"></use>
-                  </svg>
-                </span>
-                <ul className="places__options places__options--custom">
-                  <li className="places__option places__option--active" tabIndex={0}>Popular</li>
-                  <li className="places__option" tabIndex={0}>Price: low to high</li>
-                  <li className="places__option" tabIndex={0}>Price: high to low</li>
-                  <li className="places__option" tabIndex={0}>Top rated first</li>
-                </ul>
-              </form>
-              <PlaceList offersData={selectedCityOffers} onListItemHover={handleListItemHover}/>
+              <b className="places__found">{selectedCityOffers.length} place{selectedCityOffers.length > 1 && 's'} to stay in {selectedCityName}</b>
+              <PlacesSorting
+                currentSort={currentSort}
+                onSortChange={handleSortChange}
+              />
+
+              <PlaceList
+                offersData={sortedOffers}
+                onListItemHover={handleListItemHover}
+              />
             </section>
             <div className="cities__right-section">
               <section className="cities__map map">
-                <Map location={selectedCity.location} points={selectedCityOffers} selectedPoint={selectedOffer}/>
+                <Map
+                  location={selectedCity.location}
+                  points={selectedCityOffers}
+                  selectedPoint={selectedOffer}
+                />
               </section>
             </div>
           </div>

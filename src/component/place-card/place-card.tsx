@@ -12,6 +12,12 @@ function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
   const location = useLocation();
   const offerLink = `${AppRoute.Offer}/${offer.id}`;
 
+  const handleMouseEnter = () => {
+    if (onCardHover) {
+      onCardHover(offer.id);
+    }
+  };
+
   let articleClassName = 'place-card';
   let divImageClassName = 'place-card__image-wrapper';
   let imageWidth = 260;
@@ -39,7 +45,7 @@ function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
   return (
     <article
       className={articleClassName}
-      onMouseEnter={() => onCardHover?.(offer.id)}
+      onMouseEnter={handleMouseEnter}
     >
       {offer.isPremium ?
         <div className="place-card__mark">

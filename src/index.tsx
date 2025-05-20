@@ -4,8 +4,11 @@ import App from './component/app/app';
 import { AuthorizationStatus } from './const';
 import { Provider } from 'react-redux';
 import { store } from './store';
+import { fetchOffersAction } from './store/api-actions';
 
 const isAuth = AuthorizationStatus.Auth;
+
+store.dispatch(fetchOffersAction());
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

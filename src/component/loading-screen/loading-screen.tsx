@@ -1,14 +1,13 @@
+import './loading-screen.css';
+
 function LoadingScreen(): JSX.Element {
   return (
-    <p style={{
-      height: '100vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}
-    >
-      Loading ...
-    </p>
+    <div className="loading">
+      <div className="loading__content">
+        <div className="loading__spinner"></div>
+        <p className="loading__text">Loading ...</p>
+      </div>
+    </div>
   );
 }
 

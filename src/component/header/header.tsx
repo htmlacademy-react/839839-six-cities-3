@@ -1,13 +1,25 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
+import { useAppDispatch } from '../../hooks';
+import { logoutAction } from '../../store/api-actions';
 
 function Header(): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  const handleLogoutClick = (evt: React.MouseEvent<HTMLAnchorElement>) => {
+    evt.preventDefault();
+    dispatch(logoutAction());
+  };
+
   return (
     <header className="header">
       <div className="container">
         <div className="header__wrapper">
           <div className="header__left">
-            <Link to={AppRoute.Root} className="header__logo-link header__logo-link--active">
+            <Link
+              to={AppRoute.Root}
+              className="header__logo-link header__logo-link--active"
+            >
               <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
             </Link>
           </div>
@@ -22,9 +34,13 @@ function Header(): JSX.Element {
                 </a>
               </li>
               <li className="header__nav-item">
-                <a className="header__nav-link" href="#">
+                <Link
+                  className="header__nav-link"
+                  to={AppRoute.Root}
+                  onClick={handleLogoutClick}
+                >
                   <span className="header__signout">Sign out</span>
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>

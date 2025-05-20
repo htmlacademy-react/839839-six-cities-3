@@ -2,21 +2,18 @@ import { FormEvent, useRef } from 'react';
 import Header from '../../component/header/header';
 import { useAppDispatch } from '../../hooks';
 import { loginAction } from '../../store/api-actions';
-import { useNavigate } from 'react-router-dom';
-import { AppRoute } from '../../const';
 
 function LoginScreen(): JSX.Element {
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (loginRef.current !== null && passwordRef.current !== null) {
       dispatch(loginAction({
-        login: loginRef.current.value,
+        email: loginRef.current.value,
         password: passwordRef.current.value,
       }));
     }
@@ -61,7 +58,6 @@ function LoginScreen(): JSX.Element {
               <button
                 className="login__submit form__submit button"
                 type="submit"
-                onClick={() => navigate(AppRoute.Root)}
               >
                 Sign in
               </button>

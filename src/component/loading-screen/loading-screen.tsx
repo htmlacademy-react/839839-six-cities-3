@@ -1,6 +1,14 @@
 function LoadingScreen(): JSX.Element {
   return (
-    <p>Loading ...</p>
+    <p style={{
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+    >
+      Loading ...
+    </p>
   );
 }
 

@@ -1,0 +1,44 @@
+.not-found {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  text-align: center;
+}
+
+.not-found__title {
+  font-size: 4rem;
+  color: #2d3748;
+  margin: 0;
+  animation: bounce 1s infinite alternate;
+}
+
+.not-found__text {
+  font-size: 1.2rem;
+  color: #4a5568;
+  margin: 0 0 1rem;
+  max-width: 500px;
+}
+
+.not-found__link {
+  padding: 12px 24px;
+  background: #4299e1;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.not-found__link:hover {
+  background: #3182ce;
+  transform: translateY(-2px);
+}
+
+@keyframes bounce {
+  from { transform: translateY(0px); }
+  to { transform: translateY(-10px); }
+}

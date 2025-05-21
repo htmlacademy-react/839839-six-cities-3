@@ -1,20 +1,37 @@
-import { FormEvent, useRef } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import Header from '../../component/header/header';
 import { useAppDispatch } from '../../hooks';
 import { loginAction } from '../../store/api-actions';
 
+const PASSWORD_ERROR_TEXT = 'The password must contain at least one letter and one number';
+
 function LoginScreen(): JSX.Element {
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const dispatch = useAppDispatch();
+
+  const validatePassword = (password: string): boolean => {
+    const hasLetter = /[a-zA-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    return hasLetter && hasNumber;
+  };
+
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (loginRef.current !== null && passwordRef.current !== null) {
+      const password = passwordRef.current.value;
+
+      if (!validatePassword(password)) {
+        setPasswordError(PASSWORD_ERROR_TEXT);
+        return;
+      }
+      setPasswordError(null);
       dispatch(loginAction({
         email: loginRef.current.value,
-        password: passwordRef.current.value,
+        password,
       }));
     }
   };
@@ -52,9 +69,13 @@ function LoginScreen(): JSX.Element {
                   type="password"
                   name="password"
                   placeholder="Password"
+                  onChange={() => setPasswordError(null)}
                   required
                 />
               </div>
+              {passwordError && (
+                <div className="login__error" style={{color: 'red', margin: '-20px 5px 5px', fontSize: '12px'}}>{passwordError}</div>
+              )}
               <button
                 className="login__submit form__submit button"
                 type="submit"

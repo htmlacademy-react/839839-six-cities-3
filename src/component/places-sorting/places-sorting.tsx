@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { SortOrder } from '../../const';
 
+const SORT_OPTIONS = Object.values(SortOrder);
+
 type SortOptionsProps = {
   currentSort: SortOrder;
   onSortChange: (sortType: SortOrder) => void;
@@ -8,7 +10,6 @@ type SortOptionsProps = {
 
 function PlacesSorting({currentSort, onSortChange}: SortOptionsProps): JSX.Element {
   const sortMenuRef = useRef<HTMLUListElement>(null);
-  const sortOptions = Object.values(SortOrder);
 
   const handleToggleClick = () => {
     sortMenuRef.current?.classList.toggle('places__options--opened');
@@ -36,7 +37,7 @@ function PlacesSorting({currentSort, onSortChange}: SortOptionsProps): JSX.Eleme
         className="places__options places__options--custom"
         ref={sortMenuRef}
       >
-        {sortOptions.map((option) => (
+        {SORT_OPTIONS.map((option) => (
           <li
             className={`places__option ${currentSort === option ? 'places__option--active' : ''}`}
             key={option}

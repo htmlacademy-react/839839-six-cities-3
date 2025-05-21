@@ -6,6 +6,10 @@ import { AppRoute, AuthorizationStatus } from '../../const';
 import { Navigate } from 'react-router-dom';
 
 const PASSWORD_ERROR_TEXT = 'The password must contain at least one letter and one number';
+const PASSWORD_REGEX = {
+  LETTER: /[a-zA-Z]/,
+  NUMBER: /[0-9]/,
+};
 
 function LoginScreen(): JSX.Element {
   const loginRef = useRef<HTMLInputElement | null>(null);
@@ -20,8 +24,8 @@ function LoginScreen(): JSX.Element {
   }
 
   const validatePassword = (password: string): boolean => {
-    const hasLetter = /[a-zA-Z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
+    const hasLetter = PASSWORD_REGEX.LETTER.test(password);
+    const hasNumber = PASSWORD_REGEX.NUMBER.test(password);
     return hasLetter && hasNumber;
   };
 

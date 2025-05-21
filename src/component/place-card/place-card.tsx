@@ -12,11 +12,7 @@ function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
   const location = useLocation();
   const offerLink = `${AppRoute.Offer}/${offer.id}`;
 
-  const handleMouseEnter = () => {
-    if (onCardHover) {
-      onCardHover(offer.id);
-    }
-  };
+  const handleMouseEnter = () => onCardHover?.(offer.id);
 
   let articleClassName = 'place-card';
   let divImageClassName = 'place-card__image-wrapper';

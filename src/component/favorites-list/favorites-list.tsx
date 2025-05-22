@@ -2,10 +2,7 @@ import { Link } from 'react-router-dom';
 import { DestinationCities } from '../../const';
 import { OffersType } from '../../types/offers';
 import PlaceCard from '../place-card/place-card';
-
-type FavoritesListProps = {
-  favoriteOffers: OffersType;
-}
+import { useAppSelector } from '../../hooks';
 
 type FavoritesLocationsItemsProps = {
   offersData: OffersType;
@@ -42,11 +39,26 @@ function FavoritesLocationsItems({offersData, city}: FavoritesLocationsItemsProp
   }
 }
 
-function FavoritesList({favoriteOffers}: FavoritesListProps): JSX.Element {
+function FavoritesList(): JSX.Element | null {
+  const favoriteOffers = useAppSelector((state) => state.favorites);
+
+  if (!favoriteOffers?.length) {
+    return null;
+  }
+
   return (
-    <ul className="favorites__list">
-      {DestinationCities.map((city) => <FavoritesLocationsItems key={city} offersData={favoriteOffers} city={city}/>)}
-    </ul>
+    <>
+      <h1 className="favorites__title">Saved listing</h1>
+      <ul className="favorites__list">
+        {DestinationCities.map((city) => (
+          <FavoritesLocationsItems
+            key={city}
+            offersData={favoriteOffers}
+            city={city}
+          />
+        ))}
+      </ul>
+    </>
   );
 }
 

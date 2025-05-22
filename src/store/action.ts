@@ -18,3 +18,5 @@ export const setError = createAction<string | null>('setError');
 export const redirectToRoute = createAction<AppRoute>('redirectToRoute');
 
 export const setUserData = createAction<UserData | null>('user/userData');
+
+export const loadFavorites = createAction<OffersType | null>('user/loadFavorites');

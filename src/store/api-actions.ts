@@ -3,7 +3,7 @@ import { AppDispatch, State } from '../types/state';
 import { AxiosInstance } from 'axios';
 import { OffersType } from '../types/offers';
 import { APIRoute, AppRoute, AuthorizationStatus, TIMEOUT_SHOW_ERROR } from '../const';
-import { loadOffers, redirectToRoute, requireAuthorization, setError, setOffersDataLoadingStatus, setUserData } from './action';
+import { loadFavorites, loadOffers, redirectToRoute, requireAuthorization, setError, setOffersDataLoadingStatus, setUserData } from './action';
 import { dropToken, saveToken } from '../services/token';
 import { AuthData } from '../types/auth-data';
 import { UserData } from '../types/user-data';
@@ -30,6 +30,18 @@ export const fetchOffersAction = createAsyncThunk<void, undefined, {
     const {data} = await api.get<OffersType>(APIRoute.Offers);
     dispatch(setOffersDataLoadingStatus(false));
     dispatch(loadOffers(data));
+  },
+);
+
+export const fetchFavoritesAction = createAsyncThunk<void, undefined, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'data/fetchFavorites',
+  async (_arg, {dispatch, extra: api}) => {
+    const {data} = await api.get<OffersType>(APIRoute.Favorite);
+    dispatch(loadFavorites(data));
   },
 );
 

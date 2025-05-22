@@ -6,8 +6,9 @@ import Map from '../../component/map/map';
 import CitiesList from '../../component/cities-list/cities-list';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import PlacesSorting from '../../component/places-sorting/places-sorting';
-import { SortOrder } from '../../const';
+import { AuthorizationStatus, SortOrder } from '../../const';
 import { selectSortOrder } from '../../store/action';
+import { fetchFavoritesAction } from '../../store/api-actions';
 
 
 function MainScreen(): JSX.Element {
@@ -15,10 +16,15 @@ function MainScreen(): JSX.Element {
   const selectedCityName = useAppSelector((state) => state.cityName);
   const offersData = useAppSelector((state) => state.offers);
   const currentSort = useAppSelector((state) => state.sortOrder);
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const [selectedOffer, setSelectedOffer] = useState<OfferType | undefined>(undefined);
 
   const selectedCityOffers = offersData.filter((offer) => offer.city.name === selectedCityName);
   const selectedCity = selectedCityOffers[0].city;
+
+  if (authorizationStatus === AuthorizationStatus.Auth) {
+    dispatch(fetchFavoritesAction());
+  }
 
   const getSortedOffers = () => {
     switch (currentSort) {

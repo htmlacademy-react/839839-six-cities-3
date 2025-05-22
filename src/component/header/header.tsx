@@ -6,6 +6,7 @@ import { logoutAction } from '../../store/api-actions';
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const favoritesCount = useAppSelector((state) => state.favorites?.length);
   const userData = useAppSelector((state) => state.userData);
   const email = userData?.email;
   const avatarUrl = userData?.avatarUrl;
@@ -44,7 +45,7 @@ function Header(): JSX.Element {
                         />
                       </div>
                       <span className="header__user-name user__name">{email}</span>
-                      <span className="header__favorite-count">3</span>
+                      <span className="header__favorite-count">{favoritesCount}</span>
                     </Link>
                   </li>
                   <li className="header__nav-item">

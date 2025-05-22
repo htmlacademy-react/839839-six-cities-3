@@ -3,12 +3,13 @@ import { AppDispatch, State } from '../types/state';
 import { AxiosInstance } from 'axios';
 import { OffersType } from '../types/offers';
 import { APIRoute, AppRoute, AuthorizationStatus, TIMEOUT_SHOW_ERROR } from '../const';
-import { loadFavorites, loadNearbyOffers, loadOfferById, loadOffers, redirectToRoute, requireAuthorization, setError, setOffersDataLoadingStatus, setUserData } from './action';
+import { loadComments, loadFavorites, loadNearbyOffers, loadOfferById, loadOffers, redirectToRoute, requireAuthorization, setError, setOffersDataLoadingStatus, setUserData } from './action';
 import { dropToken, saveToken } from '../services/token';
 import { AuthData } from '../types/auth-data';
 import { UserData } from '../types/user-data';
 import { store } from './index';
 import { OfferByIdType } from '../types/offer-by-id';
+import { CommentsType } from '../types/comments';
 
 export const clearErrorAction = createAsyncThunk(
   'clearError',
@@ -43,6 +44,18 @@ export const fetchOfferByIdAction = createAsyncThunk<void, string, {
   async (offerId,{dispatch, extra: api}) => {
     const {data} = await api.get<OfferByIdType>(`${APIRoute.Offers}/${offerId}`);
     dispatch(loadOfferById(data));
+  }
+);
+
+export const fetchCommentsAction = createAsyncThunk<void, string, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'data/fetchComments',
+  async (offerId, {dispatch, extra: api}) => {
+    const {data} = await api.get<CommentsType>(`${APIRoute.Comments}/${offerId}`);
+    dispatch(loadComments(data));
   }
 );
 

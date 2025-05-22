@@ -1,8 +1,9 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { AuthorizationStatus, DestinationCities, SortOrder } from '../const';
-import { loadFavorites, loadOffers, requireAuthorization, selectCity, selectSortOrder, setError, setOffersDataLoadingStatus, setUserData } from './action';
+import { loadFavorites, loadNearbyOffers, loadOfferById, loadOffers, requireAuthorization, selectCity, selectSortOrder, setError, setOffersDataLoadingStatus, setUserData } from './action';
 import { OffersType } from '../types/offers';
 import { UserData } from '../types/user-data';
+import { OfferByIdType } from '../types/offer-by-id';
 
 const initialCity = DestinationCities[0];
 
@@ -15,6 +16,8 @@ type initialStateType = {
   error: string | null;
   userData: UserData | null;
   favorites: OffersType | null;
+  offerById: OfferByIdType | null;
+  nearbyOffers: OffersType | null;
 }
 
 const initialState: initialStateType = {
@@ -26,7 +29,8 @@ const initialState: initialStateType = {
   error: null,
   userData: null,
   favorites: [],
-
+  offerById: null,
+  nearbyOffers: [],
 };
 
 const reducer = createReducer(initialState, (builder) => {
@@ -54,6 +58,12 @@ const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(loadFavorites, (state, action) => {
       state.favorites = action.payload;
+    })
+    .addCase(loadOfferById, (state, action) => {
+      state.offerById = action.payload;
+    })
+    .addCase(loadNearbyOffers, (state, action) => {
+      state.nearbyOffers = action.payload;
     });
 });
 

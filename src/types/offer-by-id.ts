@@ -1,4 +1,4 @@
-import { OfferType } from './offers';
+import { CityType, LocationType } from './offers';
 
 export type User = {
   name: string;
@@ -6,7 +6,16 @@ export type User = {
   isPro: boolean;
 };
 
-export type OfferByIdType = Omit<OfferType, 'previewImage'> & {
+export type OfferByIdType = {
+  id: string;
+  title: string;
+  type: string;
+  price: number;
+  city: CityType;
+  location: LocationType;
+  isFavorite: boolean;
+  isPremium: boolean;
+  rating: number;
   description: string;
   bedrooms: number;
   goods: string[];

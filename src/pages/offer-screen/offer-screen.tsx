@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import { AuthorizationStatus } from '../../const';
 import { getRatingPercentage } from '../../utils/utils';
 import Header from '../../component/header/header';
 import NotFoundScreen from '../not-found-screen/not-found-screen';
@@ -13,11 +12,7 @@ import { fetchNearbyOffersAction, fetchOfferByIdAction } from '../../store/api-a
 const NEARBY_OFFERS_COUNT = 3;
 const OFFER_IMGS_COUNT = 6;
 
-type OfferScreenProps = {
-  authorizationStatus: AuthorizationStatus;
-}
-
-function OfferScreen ({authorizationStatus}: OfferScreenProps): JSX.Element {
+function OfferScreen (): JSX.Element {
   const dispatch = useAppDispatch();
   const params = useParams();
   const currentOfferId = params.id;
@@ -138,7 +133,7 @@ function OfferScreen ({authorizationStatus}: OfferScreenProps): JSX.Element {
                   </p>
                 </div>
               </div>
-              <Reviews offerId={offerById.id} authorizationStatus={authorizationStatus}/>
+              <Reviews offerId={offerById.id} />
             </div>
           </div>
           <section className="offer__map map">

@@ -1,15 +1,26 @@
+import { useEffect } from 'react';
 import { AuthorizationStatus } from '../../const';
-import { comments } from '../../mocks/comments';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { CommentsType } from '../../types/comments';
 import ReviewsForm from '../review-form/review-form';
 import ReviewsList from '../reviews-list/reviews-list';
+import { fetchCommentsAction } from '../../store/api-actions';
 
 type ReviewsProps = {
   offerId: string;
-  authorizationStatus: AuthorizationStatus;
 }
 
-function Reviews({offerId, authorizationStatus}: ReviewsProps): JSX.Element {
+function Reviews({offerId}: ReviewsProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const comments = useAppSelector((state) => state.comments);
+
+  useEffect(() => {
+    if (offerId) {
+      dispatch(fetchCommentsAction(offerId));
+    }
+  }, [dispatch, offerId]);
+
   const commentsOffers: CommentsType = comments.filter((comment) => comment.id === offerId);
   return (
     <section className="offer__reviews reviews">

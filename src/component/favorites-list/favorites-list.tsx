@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
-import { DestinationCities } from '../../const';
+import { AppRoute, DestinationCities } from '../../const';
 import { OffersType } from '../../types/offers';
 import PlaceCard from '../place-card/place-card';
 import { useAppSelector } from '../../hooks';
+import { handleCityClick } from '../../utils/utils';
 
 type FavoritesLocationsItemsProps = {
   offersData: OffersType;
@@ -26,7 +27,11 @@ function FavoritesLocationsItems({offersData, city}: FavoritesLocationsItemsProp
       <li className="favorites__locations-items" key={city}>
         <div className="favorites__locations locations locations--current">
           <div className="locations__item">
-            <Link className="locations__item-link" to="#">
+            <Link
+              className="locations__item-link"
+              to={AppRoute.Root}
+              onClick={handleCityClick(city)}
+            >
               <span>{city}</span>
             </Link>
           </div>

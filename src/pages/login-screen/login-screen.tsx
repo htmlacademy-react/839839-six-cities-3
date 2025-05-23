@@ -2,8 +2,9 @@ import { FormEvent, useRef, useState } from 'react';
 import Header from '../../component/header/header';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { loginAction } from '../../store/api-actions';
-import { AppRoute, AuthorizationStatus } from '../../const';
-import { Navigate } from 'react-router-dom';
+import { AppRoute, AuthorizationStatus, DestinationCities } from '../../const';
+import { Link, Navigate } from 'react-router-dom';
+import { handleCityClick } from '../../utils/utils';
 
 const PASSWORD_ERROR_TEXT = 'The password must contain at least one letter and one number';
 const PASSWORD_REGEX = {
@@ -96,9 +97,13 @@ function LoginScreen(): JSX.Element {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <a className="locations__item-link" href="#">
+              <Link
+                className="locations__item-link"
+                to={AppRoute.Root}
+                onClick={handleCityClick(DestinationCities[3])}
+              >
                 <span>Amsterdam</span>
-              </a>
+              </Link>
             </div>
           </section>
         </div>

@@ -51,7 +51,7 @@ function RatingItem({rating, onStarClick}: RatingItemProps): JSX.Element {
         className="reviews__rating-label form__rating-label"
         title={rating.title}
       >
-        <svg className="form__star-image" width="37" height="33">
+        <svg className="form__star-image" width={37} height={33}>
           <use xlinkHref="#icon-star"></use>
         </svg>
       </label>

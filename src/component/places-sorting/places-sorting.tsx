@@ -29,7 +29,7 @@ function PlacesSorting({currentSort, onSortChange}: SortOptionsProps): JSX.Eleme
         onClick={handleToggleClick}
       >
         {currentSort}
-        <svg className="places__sorting-arrow" width="7" height="4">
+        <svg className="places__sorting-arrow" width={7} height={4}>
           <use xlinkHref="#icon-arrow-select"></use>
         </svg>
       </span>

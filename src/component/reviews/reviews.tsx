@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { AuthorizationStatus } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { CommentsType } from '../../types/comments';
 import ReviewsForm from '../review-form/review-form';
 import ReviewsList from '../reviews-list/reviews-list';
 import { fetchCommentsAction } from '../../store/api-actions';
@@ -13,7 +12,7 @@ type ReviewsProps = {
 function Reviews({offerId}: ReviewsProps): JSX.Element {
   const dispatch = useAppDispatch();
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const comments = useAppSelector((state) => state.comments);
+  const commentsOffers = useAppSelector((state) => state.comments);
 
   useEffect(() => {
     if (offerId) {
@@ -21,10 +20,12 @@ function Reviews({offerId}: ReviewsProps): JSX.Element {
     }
   }, [dispatch, offerId]);
 
-  const commentsOffers: CommentsType = comments.filter((comment) => comment.id === offerId);
   return (
     <section className="offer__reviews reviews">
-      <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{commentsOffers.length}</span></h2>
+      <h2 className="reviews__title">
+        Reviews &middot;
+        <span className="reviews__amount">{commentsOffers.length}</span>
+      </h2>
       <ReviewsList commentsOffers={commentsOffers}/>
       {authorizationStatus === AuthorizationStatus.Auth && <ReviewsForm />}
     </section>

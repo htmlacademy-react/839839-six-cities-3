@@ -10,6 +10,8 @@ import { UserDataType } from '../types/user-data';
 import { store } from './index';
 import { OfferByIdType } from '../types/offer-by-id';
 import { CommentsType } from '../types/comments';
+import { FeedbackType } from '../types/feedback';
+import { processErrorHandle } from '../services/process-error-handle';
 
 export const clearErrorAction = createAsyncThunk(
   'clearError',
@@ -47,7 +49,21 @@ export const fetchOfferByIdAction = createAsyncThunk<void, string | undefined, {
   }
 );
 
-export const fetchCommentsAction = createAsyncThunk<void, string, {
+export const fetchNearbyOffersAction = createAsyncThunk<void, string, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'data/fetchNearbyOffers',
+  async (offerId, {dispatch, extra: api}) => {
+    const {data} = await api.get<OffersType>(`${APIRoute.Offers}/${offerId}/nearby`);
+    dispatch(loadNearbyOffers(data));
+  }
+);
+
+export const fetchCommentsAction = createAsyncThunk<void,
+  string | undefined,
+  {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
@@ -59,17 +75,6 @@ export const fetchCommentsAction = createAsyncThunk<void, string, {
   }
 );
 
-export const fetchNearbyOffersAction = createAsyncThunk<void, string, {
-  dispatch: AppDispatch;
-  state: State;
-  extra: AxiosInstance;
-}>(
-  'data/fetchNearbyOffers',
-  async (offerId,{dispatch, extra: api}) => {
-    const {data} = await api.get<OffersType>(`${APIRoute.Offers}/${offerId}/nearby`);
-    dispatch(loadNearbyOffers(data));
-  }
-);
 
 export const fetchFavoritesAction = createAsyncThunk<void, undefined, {
   dispatch: AppDispatch;
@@ -128,3 +133,43 @@ export const logoutAction = createAsyncThunk<void, undefined, {
     dispatch(setUserData(null));
   },
 );
+
+export const postCommentAction = createAsyncThunk<void,
+  [string | undefined, FeedbackType],
+  {
+    dispatch: AppDispatch;
+    state: State;
+    extra: AxiosInstance;
+}>(
+  'data/postComment',
+  async ([offerId, comment], {extra: api}) => {
+    await api.post<FeedbackType>(`${APIRoute.Comments}/${offerId}`, comment);
+  }
+);
+
+export const setFavoriteStatusAction = createAsyncThunk<void,
+  [string | undefined, number],
+  {
+    dispatch: AppDispatch;
+    state: State;
+    extra: AxiosInstance;
+  }>(
+    'data/setFavoriteStatus',
+    async ([offerId, status], {dispatch, getState, extra: api }) => {
+      const { authorizationStatus } = getState();
+
+      if (authorizationStatus !== AuthorizationStatus.Auth) {
+        dispatch(redirectToRoute(AppRoute.Login));
+        return;
+      }
+
+      try {
+        await api.post<OfferByIdType>(`${APIRoute.Favorite}/${offerId}/${status}`);
+        dispatch(fetchFavoritesAction());
+        dispatch(fetchOfferByIdAction(offerId));
+        dispatch(fetchOffersAction());
+      } catch(error) {
+        processErrorHandle(String(error));
+      }
+    }
+  );

@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { AppRoute } from '../../const';
-import { getRatingPercentage } from '../../utils/utils';
+import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
 import { OfferType } from '../../types/offers';
 
 type PlaceCardProps = {
@@ -64,6 +64,7 @@ function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
               button
               ${offer.isFavorite ? 'place-card__bookmark-button--active' : ''}`}
             type="button"
+            onClick={handleFavoriteClick(offer.id, Number(!offer.isFavorite))}
           >
             <svg className="place-card__bookmark-icon" width={18} height={19}>
               <use xlinkHref="#icon-bookmark"></use>

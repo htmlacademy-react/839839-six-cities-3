@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { getRatingPercentage } from '../../utils/utils';
+import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
 import Header from '../../component/header/header';
 import NotFoundScreen from '../not-found-screen/not-found-screen';
 import Reviews from '../../component/reviews/reviews';
@@ -65,7 +65,11 @@ function OfferScreen (): JSX.Element {
                 <h1 className="offer__name">
                   {offerById.title}
                 </h1>
-                <button className={`offer__bookmark-button button ${offerById.isFavorite ? 'offer__bookmark-button--active' : ''}`} type="button">
+                <button
+                  className={`offer__bookmark-button button ${offerById.isFavorite ? 'offer__bookmark-button--active' : ''}`}
+                  type="button"
+                  onClick={handleFavoriteClick(offerById.id, Number(!offerById.isFavorite))}
+                >
                   <svg className="offer__bookmark-icon" width={31} height={33}>
                     <use xlinkHref="#icon-bookmark"></use>
                   </svg>

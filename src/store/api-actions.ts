@@ -5,8 +5,8 @@ import { OffersType } from '../types/offers';
 import { APIRoute, AppRoute, AuthorizationStatus, TIMEOUT_SHOW_ERROR } from '../const';
 import { loadComments, loadFavorites, loadNearbyOffers, loadOfferById, loadOffers, redirectToRoute, requireAuthorization, setError, setOffersDataLoadingStatus, setUserData } from './action';
 import { dropToken, saveToken } from '../services/token';
-import { AuthData } from '../types/auth-data';
-import { UserData } from '../types/user-data';
+import { AuthDataType } from '../types/auth-data';
+import { UserDataType } from '../types/user-data';
 import { store } from './index';
 import { OfferByIdType } from '../types/offer-by-id';
 import { CommentsType } from '../types/comments';
@@ -35,13 +35,13 @@ export const fetchOffersAction = createAsyncThunk<void, undefined, {
   },
 );
 
-export const fetchOfferByIdAction = createAsyncThunk<void, string, {
+export const fetchOfferByIdAction = createAsyncThunk<void, string | undefined, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'data/fetchOfferById',
-  async (offerId,{dispatch, extra: api}) => {
+  async (offerId, {dispatch, extra: api}) => {
     const {data} = await api.get<OfferByIdType>(`${APIRoute.Offers}/${offerId}`);
     dispatch(loadOfferById(data));
   }
@@ -99,14 +99,14 @@ export const checkAuthAction = createAsyncThunk<void, undefined, {
   },
 );
 
-export const loginAction = createAsyncThunk<void, AuthData, {
+export const loginAction = createAsyncThunk<void, AuthDataType, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'user/login',
   async ({email, password}, {dispatch, extra: api}) => {
-    const {data} = await api.post<UserData>(APIRoute.Login, {email, password});
+    const {data} = await api.post<UserDataType>(APIRoute.Login, {email, password});
 
     saveToken(data.token);
     dispatch(requireAuthorization(AuthorizationStatus.Auth));

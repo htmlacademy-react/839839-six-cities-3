@@ -2,7 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import { AuthorizationStatus, DestinationCities, SortOrder } from '../const';
 import { loadComments, loadFavorites, loadNearbyOffers, loadOfferById, loadOffers, requireAuthorization, selectCity, selectSortOrder, setError, setOffersDataLoadingStatus, setUserData } from './action';
 import { OffersType } from '../types/offers';
-import { UserData } from '../types/user-data';
+import { UserDataType } from '../types/user-data';
 import { OfferByIdType } from '../types/offer-by-id';
 import { CommentsType } from '../types/comments';
 
@@ -15,7 +15,7 @@ type initialStateType = {
   authorizationStatus: AuthorizationStatus;
   isOffersDataLoading: boolean;
   error: string | null;
-  userData: UserData | null;
+  userData: UserDataType | null;
   favorites: OffersType;
   offerById: OfferByIdType | null;
   nearbyOffers: OffersType;

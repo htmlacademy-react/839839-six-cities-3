@@ -32,7 +32,7 @@ function App(): JSX.Element {
           </PrivateRoute>
         }
         />
-        <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen authorizationStatus={authorizationStatus}/>}/>
+        <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen />}/>
         <Route path='*' element={<NotFoundScreen />}/>
       </Routes>
     </HistoryRouter>

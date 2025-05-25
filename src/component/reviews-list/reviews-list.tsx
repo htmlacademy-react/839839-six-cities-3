@@ -9,7 +9,7 @@ function ReviewsList({commentsOffers}: ReviewsListProps): JSX.Element {
   return (
     <ul className="reviews__list">
       {commentsOffers?.map((comment) =>
-        <ReviewsItem key={comment.date} comment={comment}/>
+        <ReviewsItem key={comment.id} comment={comment}/>
       )}
     </ul>
   );

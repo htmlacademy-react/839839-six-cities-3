@@ -29,3 +29,5 @@ export const loadOfferById = createAction<OfferByIdType>('data/loadOfferById');
 export const loadNearbyOffers = createAction<OffersType>('data/loadNearbyOffers');
 
 export const loadComments = createAction<CommentsType>('data/loadComments');
+
+export const postComment = createAction<FeedbackType | null>('data/postComment');

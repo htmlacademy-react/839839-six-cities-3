@@ -1,7 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
-import { AppRoute } from '../../const';
+import { AppRoute, AuthorizationStatus } from '../../const';
 import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
 import { OfferType } from '../../types/offers';
+import { useAppSelector } from '../../hooks';
 
 type PlaceCardProps = {
   offer: OfferType;
@@ -9,6 +10,7 @@ type PlaceCardProps = {
 }
 
 function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const location = useLocation();
   const offerLink = `${AppRoute.Offer}/${offer.id}`;
 
@@ -62,7 +64,7 @@ function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
             className={`
               place-card__bookmark-button
               button
-              ${offer.isFavorite ? 'place-card__bookmark-button--active' : ''}`}
+              ${offer.isFavorite && authorizationStatus === AuthorizationStatus.Auth ? 'place-card__bookmark-button--active' : ''}`}
             type="button"
             onClick={handleFavoriteClick(offer.id, Number(!offer.isFavorite))}
           >

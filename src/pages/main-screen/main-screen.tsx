@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { OfferType } from '../../types/offers';
 import Header from '../../component/header/header';
 import PlaceList from '../../component/place-list/place-list';
@@ -22,9 +22,11 @@ function MainScreen(): JSX.Element {
   const selectedCityOffers = offersData.filter((offer) => offer.city.name === selectedCityName);
   const selectedCity = selectedCityOffers[0].city;
 
-  if (authorizationStatus === AuthorizationStatus.Auth) {
-    dispatch(fetchFavoritesAction());
-  }
+  useEffect(() => {
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      dispatch(fetchFavoritesAction());
+    }
+  }, [authorizationStatus, dispatch]);
 
   const getSortedOffers = () => {
     switch (currentSort) {

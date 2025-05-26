@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { OfferType } from '../../types/offers';
-import Header from '../../component/header/header';
 import PlaceList from '../../component/place-list/place-list';
 import Map from '../../component/map/map';
 import CitiesList from '../../component/cities-list/cities-list';
@@ -54,40 +53,36 @@ function MainScreen(): JSX.Element {
   };
 
   return (
-    <div className="page page--gray page--main">
-      <Header />
+    <main className="page__main page__main--index">
+      <h1 className="visually-hidden">Cities</h1>
+      <CitiesList />
+      <div className="cities">
+        <div className="cities__places-container container">
+          <section className="cities__places places">
+            <h2 className="visually-hidden">Places</h2>
+            <b className="places__found">{selectedCityOffers.length} place{selectedCityOffers.length > 1 && 's'} to stay in {selectedCityName}</b>
+            <PlacesSorting
+              currentSort={currentSort}
+              onSortChange={handleSortChange}
+            />
 
-      <main className="page__main page__main--index">
-        <h1 className="visually-hidden">Cities</h1>
-        <CitiesList />
-        <div className="cities">
-          <div className="cities__places-container container">
-            <section className="cities__places places">
-              <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{selectedCityOffers.length} place{selectedCityOffers.length > 1 && 's'} to stay in {selectedCityName}</b>
-              <PlacesSorting
-                currentSort={currentSort}
-                onSortChange={handleSortChange}
-              />
-
-              <PlaceList
-                offersData={sortedOffers}
-                onListItemHover={handleListItemHover}
+            <PlaceList
+              offersData={sortedOffers}
+              onListItemHover={handleListItemHover}
+            />
+          </section>
+          <div className="cities__right-section">
+            <section className="cities__map map">
+              <Map
+                location={selectedCity.location}
+                points={selectedCityOffers}
+                selectedPoint={selectedOffer}
               />
             </section>
-            <div className="cities__right-section">
-              <section className="cities__map map">
-                <Map
-                  location={selectedCity.location}
-                  points={selectedCityOffers}
-                  selectedPoint={selectedOffer}
-                />
-              </section>
-            </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
 

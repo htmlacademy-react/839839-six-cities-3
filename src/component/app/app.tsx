@@ -10,6 +10,8 @@ import { useAppSelector } from '../../hooks';
 import LoadingScreen from '../loading-screen/loading-screen';
 import HistoryRouter from '../history-route/history-route';
 import browserHistory from '../../browser-history';
+import Layout from '../layout/layout';
+import MainLayout from '../layout/main-layout';
 
 function App(): JSX.Element {
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
@@ -24,15 +26,19 @@ function App(): JSX.Element {
   return (
     <HistoryRouter history={browserHistory}>
       <Routes>
-        <Route path={AppRoute.Root} element={<MainScreen />}/>
+        <Route element={<MainLayout />}>
+          <Route path={AppRoute.Root} element={<MainScreen />}/>
+        </Route>
         <Route path={AppRoute.Login} element={<LoginScreen />}/>
-        <Route path={AppRoute.Favorites} element={
-          <PrivateRoute authorizationStatus={authorizationStatus}>
-            <FavoritesScreen />
-          </PrivateRoute>
-        }
-        />
-        <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen />}/>
+        <Route element={<Layout />}>
+          <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen />}/>
+          <Route path={AppRoute.Favorites} element={
+            <PrivateRoute authorizationStatus={authorizationStatus}>
+              <FavoritesScreen />
+            </PrivateRoute>
+          }
+          />
+        </Route>
         <Route path='*' element={<NotFoundScreen />}/>
       </Routes>
     </HistoryRouter>

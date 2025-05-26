@@ -1,17 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { OfferType } from '../../types/offers';
-import PlaceList from '../../component/place-list/place-list';
 import Map from '../../component/map/map';
-import CitiesList from '../../component/cities-list/cities-list';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import PlacesSorting from '../../component/places-sorting/places-sorting';
-import { AuthorizationStatus, SortOrder } from '../../const';
-import { fetchFavoritesAction } from '../../store/api-actions';
+import { SortOrder } from '../../const';
 import { getSelectCity, getSortOrder } from '../../store/app-params/selectors';
 import { getOffers } from '../../store/data-precess/selectors';
-import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { selectSortOrder } from '../../store/app-params/app-params';
 import EmptyCity from '../../component/empty-city/empty-city';
+import MemorizedPlaceList from '../../component/place-list/place-list';
+import MemorizedCitiesList from '../../component/cities-list/cities-list';
 
 
 function MainScreen(): JSX.Element {
@@ -19,17 +17,10 @@ function MainScreen(): JSX.Element {
   const selectedCityName = useAppSelector(getSelectCity);
   const offersData = useAppSelector(getOffers);
   const currentSort = useAppSelector(getSortOrder);
-  const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const [selectedOffer, setSelectedOffer] = useState<OfferType | undefined>(undefined);
 
   const selectedCityOffers = offersData.filter((offer) => offer.city.name === selectedCityName);
   const selectedCity = selectedCityOffers[0].city;
-
-  useEffect(() => {
-    if (authorizationStatus === AuthorizationStatus.Auth) {
-      dispatch(fetchFavoritesAction());
-    }
-  }, [authorizationStatus, dispatch]);
 
   const getSortedOffers = () => {
     switch (currentSort) {
@@ -46,20 +37,20 @@ function MainScreen(): JSX.Element {
 
   const sortedOffers = getSortedOffers();
 
-  const handleSortChange = (sortType: SortOrder) => {
+  const handleSortChange = useCallback((sortType: SortOrder) => {
     dispatch(selectSortOrder(sortType));
-  };
+  }, [dispatch]);
 
 
-  const handleListItemHover = (offerId: string) => {
+  const handleListItemHover = useCallback((offerId: string) => {
     const currentOffer = selectedCityOffers.find((offer) => offer.id === offerId);
     setSelectedOffer(currentOffer);
-  };
+  }, [selectedCityOffers]);
 
   return (
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>
-      <CitiesList />
+      <MemorizedCitiesList />
       <div className="cities">
         {selectedCityOffers && selectedCityOffers.length > 0
           ? (
@@ -71,7 +62,7 @@ function MainScreen(): JSX.Element {
                   onSortChange={handleSortChange}
                 />
 
-                <PlaceList
+                <MemorizedPlaceList
                   offersData={sortedOffers}
                   onListItemHover={handleListItemHover}
                 />

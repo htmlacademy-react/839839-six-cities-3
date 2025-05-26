@@ -3,11 +3,11 @@ import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
 import NotFoundScreen from '../not-found-screen/not-found-screen';
 import Reviews from '../../component/reviews/reviews';
 import Map from '../../component/map/map';
-import PlaceCard from '../../component/place-card/place-card';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { fetchNearbyOffersAction, fetchOfferByIdAction } from '../../store/api-actions';
 import { getNearbyOffers, getOfferById, getOffers } from '../../store/data-precess/selectors';
+import MemorizedPlaceCard from '../../component/place-card/place-card';
 
 const NEARBY_OFFERS_COUNT = 3;
 const OFFER_IMGS_COUNT = 6;
@@ -150,7 +150,7 @@ function OfferScreen (): JSX.Element {
           <h2 className="near-places__title">Other places in the neighbourhood</h2>
           <div className="near-places__list places__list">
             {currentNearbyOffers.map((offer) => (
-              <PlaceCard
+              <MemorizedPlaceCard
                 offer={offer}
                 key={offer.id}
               />

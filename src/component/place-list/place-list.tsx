@@ -1,5 +1,6 @@
+import { memo } from 'react';
 import { OffersType } from '../../types/offers';
-import PlaceCard from '../place-card/place-card';
+import MemorizedPlaceCard from '../place-card/place-card';
 
 type PlaceListProps = {
   offersData: OffersType;
@@ -10,7 +11,7 @@ function PlaceList({offersData, onListItemHover}: PlaceListProps): JSX.Element {
   return (
     <div className="cities__places-list places__list tabs__content">
       {offersData.map((offer) => (
-        <PlaceCard
+        <MemorizedPlaceCard
           offer={offer}
           key={offer.id}
           onCardHover={onListItemHover}
@@ -20,4 +21,6 @@ function PlaceList({offersData, onListItemHover}: PlaceListProps): JSX.Element {
   );
 }
 
-export default PlaceList;
+const MemorizedPlaceList = memo(PlaceList);
+
+export default MemorizedPlaceList;

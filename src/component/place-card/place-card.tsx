@@ -4,6 +4,7 @@ import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
 import { OfferType } from '../../types/offers';
 import { useAppSelector } from '../../hooks';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { memo } from 'react';
 
 type PlaceCardProps = {
   offer: OfferType;
@@ -90,4 +91,6 @@ function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
   );
 }
 
-export default PlaceCard;
+const MemorizedPlaceCard = memo(PlaceCard);
+
+export default MemorizedPlaceCard;

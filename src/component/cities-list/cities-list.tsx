@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { DestinationCities } from '../../const';
 import LocationItem from '../location-item/location-item';
 
@@ -20,4 +21,6 @@ function CitiesList(): JSX.Element {
   );
 }
 
-export default CitiesList;
+const MemorizedCitiesList = memo(CitiesList);
+
+export default MemorizedCitiesList;

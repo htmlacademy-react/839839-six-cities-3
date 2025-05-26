@@ -4,7 +4,7 @@ import { AppRoute } from '../../const';
 import Header from '../header/header';
 import { getFavorites } from '../../store/data-precess/selectors';
 
-function Layout () {
+function Layout(): JSX.Element {
   const favorites = useAppSelector(getFavorites);
   const location = useLocation();
 

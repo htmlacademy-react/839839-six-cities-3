@@ -14,6 +14,7 @@ import Layout from '../layout/layout';
 import MainLayout from '../layout/main-layout';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { getOffersDataLoadingStatus } from '../../store/data-precess/selectors';
+import LoginLayout from '../layout/login-layout';
 
 function App(): JSX.Element {
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
@@ -28,10 +29,12 @@ function App(): JSX.Element {
   return (
     <HistoryRouter history={browserHistory}>
       <Routes>
-        <Route element={<MainLayout />}>
-          <Route path={AppRoute.Root} element={<MainScreen />}/>
+        <Route path={AppRoute.Root} element={<MainLayout />}>
+          <Route index element={<MainScreen />}/>
         </Route>
-        <Route path={AppRoute.Login} element={<LoginScreen />}/>
+        <Route path={AppRoute.Login} element={<LoginLayout />}>
+          <Route index element={<LoginScreen />}/>
+        </Route>
         <Route element={<Layout />}>
           <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen />}/>
           <Route path={AppRoute.Favorites} element={

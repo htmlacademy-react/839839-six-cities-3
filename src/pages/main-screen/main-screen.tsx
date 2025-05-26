@@ -57,6 +57,8 @@ function MainScreen(): JSX.Element {
       <h1 className="visually-hidden">Cities</h1>
       <CitiesList />
       <div className="cities">
+        {selectedCityOffers && selectedCityOffers.length > 0
+          ? (
         <div className="cities__places-container container">
           <section className="cities__places places">
             <h2 className="visually-hidden">Places</h2>
@@ -81,6 +83,8 @@ function MainScreen(): JSX.Element {
             </section>
           </div>
         </div>
+          )
+          : (<EmptyCity />)}
       </div>
     </main>
   );

@@ -7,6 +7,7 @@ import PlaceCard from '../../component/place-card/place-card';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { fetchNearbyOffersAction, fetchOfferByIdAction } from '../../store/api-actions';
+import { getNearbyOffers, getOfferById, getOffers } from '../../store/data-precess/selectors';
 
 const NEARBY_OFFERS_COUNT = 3;
 const OFFER_IMGS_COUNT = 6;
@@ -15,9 +16,9 @@ function OfferScreen (): JSX.Element {
   const dispatch = useAppDispatch();
   const params = useParams();
   const currentOfferId = params.id;
-  const offerById = useAppSelector((state) => state.offerById);
-  const nearbyOffers = useAppSelector((state) => state.nearbyOffers);
-  const offersData = useAppSelector((state) => state.offers);
+  const offerById = useAppSelector(getOfferById);
+  const nearbyOffers = useAppSelector(getNearbyOffers);
+  const offersData = useAppSelector(getOffers);
   const currentOffer = offersData.find((item) => item.id === currentOfferId);
 
   useEffect(() => {

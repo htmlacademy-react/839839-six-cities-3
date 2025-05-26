@@ -2,9 +2,10 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
 import { AppRoute } from '../../const';
 import Header from '../header/header';
+import { getFavorites } from '../../store/data-precess/selectors';
 
 function Layout () {
-  const favorites = useAppSelector((state) => state.favorites);
+  const favorites = useAppSelector(getFavorites);
   const location = useLocation();
 
   let pageFavoritesEmptyClass = '';

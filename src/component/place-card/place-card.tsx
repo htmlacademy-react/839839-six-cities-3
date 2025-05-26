@@ -3,6 +3,7 @@ import { AppRoute, AuthorizationStatus } from '../../const';
 import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
 import { OfferType } from '../../types/offers';
 import { useAppSelector } from '../../hooks';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 type PlaceCardProps = {
   offer: OfferType;
@@ -10,7 +11,7 @@ type PlaceCardProps = {
 }
 
 function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const location = useLocation();
   const offerLink = `${AppRoute.Offer}/${offer.id}`;
 

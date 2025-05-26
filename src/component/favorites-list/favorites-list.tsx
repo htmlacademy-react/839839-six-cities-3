@@ -4,6 +4,7 @@ import { OffersType } from '../../types/offers';
 import PlaceCard from '../place-card/place-card';
 import { useAppSelector } from '../../hooks';
 import { handleCityClick } from '../../utils/utils';
+import { getFavorites } from '../../store/data-precess/selectors';
 
 type FavoritesLocationsItemsProps = {
   offersData: OffersType;
@@ -45,7 +46,7 @@ function FavoritesLocationsItems({offersData, city}: FavoritesLocationsItemsProp
 }
 
 function FavoritesList(): JSX.Element | null {
-  const favoriteOffers = useAppSelector((state) => state.favorites);
+  const favoriteOffers = useAppSelector(getFavorites);
 
   if (!favoriteOffers?.length) {
     return null;

@@ -1,20 +1,21 @@
 import { useRef } from 'react';
 import { SortOrder } from '../../const';
+import { useAppSelector } from '../../hooks';
+import { getSortOrder } from '../../store/app-params/selectors';
 
 const SORT_OPTIONS = Object.values(SortOrder);
 
 type SortOptionsProps = {
-  currentSort: SortOrder;
   onSortChange: (sortType: SortOrder) => void;
 };
 
-function PlacesSorting({currentSort, onSortChange}: SortOptionsProps): JSX.Element {
+function PlacesSorting({onSortChange}: SortOptionsProps): JSX.Element {
+  const currentSort = useAppSelector(getSortOrder);
   const sortMenuRef = useRef<HTMLUListElement>(null);
 
   const handleToggleClick = () => {
     sortMenuRef.current?.classList.toggle('places__options--opened');
   };
-
 
   const handleSortClick = (sortType: SortOrder) => {
     onSortChange(sortType);

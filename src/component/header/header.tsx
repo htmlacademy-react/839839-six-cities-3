@@ -2,15 +2,19 @@ import { Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logoutAction } from '../../store/api-actions';
+import { getAuthorizationStatus, getUserData } from '../../store/user-process/selectors';
+import { getFavorites } from '../../store/data-precess/selectors';
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const favoritesCount = useAppSelector((state) => state.favorites?.length);
-  const userData = useAppSelector((state) => state.userData);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const favorites = useAppSelector(getFavorites);
+  const favoritesCount = favorites?.length;
+  const userData = useAppSelector(getUserData);
   const email = userData?.email;
   const avatarUrl = userData?.avatarUrl;
   const name = userData?.name;
+  const isAuth = authorizationStatus === AuthorizationStatus.Auth;
 
   const handleLogoutClick = (evt: React.MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
@@ -31,7 +35,7 @@ function Header(): JSX.Element {
           </div>
           <nav className="header__nav">
             <ul className="header__nav-list">
-              {authorizationStatus === AuthorizationStatus.Auth ? (
+              { isAuth ? (
                 <>
                   <li className="header__nav-item user">
                     <Link

@@ -5,6 +5,7 @@ import { loginAction } from '../../store/api-actions';
 import { AppRoute, AuthorizationStatus, DestinationCities } from '../../const';
 import { Link, Navigate } from 'react-router-dom';
 import { handleCityClick } from '../../utils/utils';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 const PASSWORD_ERROR_TEXT = 'The password must contain at least one letter and one number';
 const PASSWORD_REGEX = {
@@ -17,7 +18,7 @@ function LoginScreen(): JSX.Element {
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const dispatch = useAppDispatch();
 
   if (authorizationStatus === AuthorizationStatus.Auth) {

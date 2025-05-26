@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import ReviewsForm from '../review-form/review-form';
 import ReviewsList from '../reviews-list/reviews-list';
 import { fetchCommentsAction } from '../../store/api-actions';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { getComments } from '../../store/data-precess/selectors';
 
 const MAX_REVIEWS_COUNT = 10;
 
@@ -13,8 +15,8 @@ type ReviewsProps = {
 
 function Reviews({offerId}: ReviewsProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const commentsOffers = useAppSelector((state) => state.comments);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const commentsOffers = useAppSelector(getComments);
 
   useEffect(() => {
     if (offerId) {

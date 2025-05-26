@@ -12,10 +12,12 @@ import HistoryRouter from '../history-route/history-route';
 import browserHistory from '../../browser-history';
 import Layout from '../layout/layout';
 import MainLayout from '../layout/main-layout';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { getOffersDataLoadingStatus } from '../../store/data-precess/selectors';
 
 function App(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const isOffersDataLoading = useAppSelector(getOffersDataLoadingStatus);
 
   if (isOffersDataLoading) {
     return (

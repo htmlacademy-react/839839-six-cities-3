@@ -3,9 +3,10 @@ import { AppRoute } from '../../const';
 import FavoritesList from '../../component/favorites-list/favorites-list';
 import { useAppSelector } from '../../hooks';
 import FavoritesEmpty from '../../component/favorites-empty/favorites-empty';
+import { getFavorites } from '../../store/data-precess/selectors';
 
 function FavoritesScreen(): JSX.Element {
-  const favorites = useAppSelector((state) => state.favorites);
+  const favorites = useAppSelector(getFavorites);
   const hasNoFavorites = favorites?.length === 0;
   const mainFavoritesEmptyClass = hasNoFavorites ? 'page__main--favorites-empty' : '';
   const sectionFavoritesEmptyClass = hasNoFavorites ? 'favorites--empty' : '';

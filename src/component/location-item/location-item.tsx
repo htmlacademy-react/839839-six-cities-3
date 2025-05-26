@@ -2,7 +2,8 @@ import { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { selectCity } from '../../store/action';
+import { getSelectCity } from '../../store/app-params/selectors';
+import { selectCity } from '../../store/app-params/app-params';
 
 type LocationItemProps = {
   location: string;
@@ -10,7 +11,7 @@ type LocationItemProps = {
 
 function LocationItem({location}: LocationItemProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const selectedCityName = useAppSelector((state) => state.cityName);
+  const selectedCityName = useAppSelector(getSelectCity);
 
   const handleLocationItemClick = (evt: MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();

@@ -1,6 +1,6 @@
 import { FormEvent, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { loginAction } from '../../store/api-actions';
+import { checkAuthAction, fetchFavoritesAction, loginAction } from '../../store/api-actions';
 import { AppRoute, AuthorizationStatus, DestinationCities } from '../../const';
 import { Link, Navigate } from 'react-router-dom';
 import { handleCityClick } from '../../utils/utils';
@@ -33,17 +33,25 @@ function LoginScreen(): JSX.Element {
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (loginRef.current !== null && passwordRef.current !== null) {
+      const email = loginRef.current.value;
       const password = passwordRef.current.value;
 
       if (!validatePassword(password)) {
         setPasswordError(PASSWORD_ERROR_TEXT);
         return;
       }
+
       setPasswordError(null);
-      dispatch(loginAction({
-        email: loginRef.current.value,
-        password,
-      }));
+
+      dispatch(loginAction({email, password}))
+        .unwrap()
+        .then(() => {
+          dispatch(checkAuthAction());
+          dispatch(fetchFavoritesAction());
+        })
+        .catch((error) => {
+          setPasswordError(String(error));
+        });
     }
   };
 

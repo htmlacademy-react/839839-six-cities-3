@@ -1,11 +1,19 @@
 import { Outlet } from 'react-router-dom';
-import Header from '../header/header';
+import Logo from '../logo/logo';
 
 function LoginLayout(): JSX.Element {
 
   return (
     <div className="page page--gray page--login">
-      <Header />
+      <header className="header">
+        <div className="container">
+          <div className="header__wrapper">
+            <div className="header__left">
+              <Logo />
+            </div>
+          </div>
+        </div>
+      </header>
       <Outlet />
     </div>
   );

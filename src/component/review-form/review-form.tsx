@@ -1,4 +1,9 @@
-import { ReactEventHandler, useState } from 'react';
+import { FormEventHandler, ReactEventHandler, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks';
+import { fetchCommentsAction, postCommentAction } from '../../store/api-actions';
+import { processErrorHandle } from '../../services/process-error-handle';
+import { FeedbackType } from '../../types/feedback';
 
 type RatingType = {
   value: number;
@@ -7,6 +12,10 @@ type RatingType = {
 
 type RatingItemProps = {
   rating: RatingType;
+  onStarClick: ReactEventHandler;
+}
+
+type ReviewsRatingFormProps = {
   onStarClick: ReactEventHandler;
 }
 
@@ -41,7 +50,7 @@ function RatingItem({rating, onStarClick}: RatingItemProps): JSX.Element {
       <input
         className="form__rating-input visually-hidden"
         name="rating"
-        value={rating.value}
+        defaultValue={rating.value}
         id={`${rating.value}-stars`}
         type="radio"
         onChange={onStarClick}
@@ -51,7 +60,7 @@ function RatingItem({rating, onStarClick}: RatingItemProps): JSX.Element {
         className="reviews__rating-label form__rating-label"
         title={rating.title}
       >
-        <svg className="form__star-image" width="37" height="33">
+        <svg className="form__star-image" width={37} height={33}>
           <use xlinkHref="#icon-star"></use>
         </svg>
       </label>
@@ -59,30 +68,70 @@ function RatingItem({rating, onStarClick}: RatingItemProps): JSX.Element {
   );
 }
 
+function ReviewsRatingForm({onStarClick}: ReviewsRatingFormProps) {
+  return (
+    <div className="reviews__rating-form form__rating">
+      {RATINGS.map((rating) =>
+        <RatingItem key={rating.value} rating={rating} onStarClick={onStarClick}/>)}
+    </div>
+  );
+}
+
 function ReviewsForm(): JSX.Element {
-  const [review, setReview] = useState({
+  const [review, setReview] = useState<FeedbackType>({
     rating: 0,
-    review: ''
+    comment: ''
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const {id} = useParams();
+  const isButtonDisabled = isLoading || review.rating === 0 || review.comment.length < 50 || review.comment.length > 300;
 
   const handleReviewChange: HandleChangeType = (evt) => {
     const {name, value} = evt.currentTarget;
-    setReview({...review, [name]: value});
+    setReview({
+      ...review,
+      [name]: name === 'rating' ? Number(value) : value,
+    });
+  };
+
+  const handleReviewFormSubmit: FormEventHandler<HTMLFormElement> = (evt) => {
+    evt.preventDefault();
+    setIsLoading(true);
+
+    dispatch(postCommentAction([id, review]))
+      .then(() => {
+        dispatch(fetchCommentsAction(id));
+        setReview({ rating: 0, comment: '' });
+      })
+      .catch((error) => {
+        processErrorHandle(String(error));
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
-    <form className="reviews__form form" action="#" method="post">
-      <label className="reviews__label form__label" htmlFor="review">Your review</label>
-      <div className="reviews__rating-form form__rating">
-        {RATINGS.map((rating) => <RatingItem key={rating.value} rating={rating} onStarClick={handleReviewChange}/>)}
-      </div>
+    <form
+      className="reviews__form form"
+      action="#"
+      method="post"
+      onSubmit={handleReviewFormSubmit}
+    >
+      <label className="reviews__label form__label" htmlFor="review">
+        Your review
+      </label>
+
+      {!isLoading && <ReviewsRatingForm onStarClick={handleReviewChange} />}
       <textarea
         className="reviews__textarea form__textarea"
         id="review"
-        name="review"
+        name="comment"
         placeholder="Tell how was your stay, what you like and what can be improved"
         defaultValue={''}
         onChange={handleReviewChange}
+        disabled={isLoading}
       >
       </textarea>
       <div className="reviews__button-wrapper">
@@ -92,9 +141,9 @@ function ReviewsForm(): JSX.Element {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={review.rating === 0 || review.review.length < 50 || review.review.length > 300}
+          disabled={isButtonDisabled}
         >
-          Submit
+          {isLoading ? 'Loading...' : 'Submit'}
         </button>
       </div>
     </form>

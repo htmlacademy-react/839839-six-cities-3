@@ -1,19 +1,21 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 import { SortOrder } from '../../const';
+import { useAppSelector } from '../../hooks';
+import { getSortOrder } from '../../store/app-params/selectors';
+
+const SORT_OPTIONS = Object.values(SortOrder);
 
 type SortOptionsProps = {
-  currentSort: SortOrder;
   onSortChange: (sortType: SortOrder) => void;
 };
 
-function PlacesSorting({currentSort, onSortChange}: SortOptionsProps): JSX.Element {
+function PlacesSorting({onSortChange}: SortOptionsProps): JSX.Element {
+  const currentSort = useAppSelector(getSortOrder);
   const sortMenuRef = useRef<HTMLUListElement>(null);
-  const sortOptions = Object.values(SortOrder);
 
   const handleToggleClick = () => {
     sortMenuRef.current?.classList.toggle('places__options--opened');
   };
-
 
   const handleSortClick = (sortType: SortOrder) => {
     onSortChange(sortType);
@@ -28,7 +30,7 @@ function PlacesSorting({currentSort, onSortChange}: SortOptionsProps): JSX.Eleme
         onClick={handleToggleClick}
       >
         {currentSort}
-        <svg className="places__sorting-arrow" width="7" height="4">
+        <svg className="places__sorting-arrow" width={7} height={4}>
           <use xlinkHref="#icon-arrow-select"></use>
         </svg>
       </span>
@@ -36,7 +38,7 @@ function PlacesSorting({currentSort, onSortChange}: SortOptionsProps): JSX.Eleme
         className="places__options places__options--custom"
         ref={sortMenuRef}
       >
-        {sortOptions.map((option) => (
+        {SORT_OPTIONS.map((option) => (
           <li
             className={`places__option ${currentSort === option ? 'places__option--active' : ''}`}
             key={option}
@@ -51,4 +53,6 @@ function PlacesSorting({currentSort, onSortChange}: SortOptionsProps): JSX.Eleme
   );
 }
 
-export default PlacesSorting;
+const MemorizedPlacesSorting = memo(PlacesSorting);
+
+export default MemorizedPlacesSorting;

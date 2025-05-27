@@ -17,7 +17,7 @@ function ReviewsItem({comment}: ReviewsItemProps): JSX.Element {
           <img
             className="reviews__avatar user__avatar"
             src={comment.user.avatarUrl}
-            width="54" height="54"
+            width={54} height={54}
             alt="Reviews avatar"
           />
         </div>

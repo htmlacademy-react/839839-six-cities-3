@@ -1,11 +1,10 @@
 import { Link } from 'react-router-dom';
-import { DestinationCities } from '../../const';
+import { AppRoute, DestinationCities } from '../../const';
 import { OffersType } from '../../types/offers';
-import PlaceCard from '../place-card/place-card';
-
-type FavoritesListProps = {
-  favoriteOffers: OffersType;
-}
+import { useAppSelector } from '../../hooks';
+import { handleCityClick } from '../../utils/utils';
+import { getFavorites } from '../../store/data-precess/selectors';
+import MemorizedPlaceCard from '../place-card/place-card';
 
 type FavoritesLocationsItemsProps = {
   offersData: OffersType;
@@ -15,7 +14,7 @@ type FavoritesLocationsItemsProps = {
 function FavoritesPlaces({offersData, city}: FavoritesLocationsItemsProps) {
   return (
     offersData.filter((offer) => offer.city.name === city).map((offer) => (
-      <PlaceCard
+      <MemorizedPlaceCard
         key={offer.id}
         offer={offer}
       />))
@@ -29,7 +28,11 @@ function FavoritesLocationsItems({offersData, city}: FavoritesLocationsItemsProp
       <li className="favorites__locations-items" key={city}>
         <div className="favorites__locations locations locations--current">
           <div className="locations__item">
-            <Link className="locations__item-link" to="#">
+            <Link
+              className="locations__item-link"
+              to={AppRoute.Root}
+              onClick={handleCityClick(city)}
+            >
               <span>{city}</span>
             </Link>
           </div>
@@ -42,11 +45,26 @@ function FavoritesLocationsItems({offersData, city}: FavoritesLocationsItemsProp
   }
 }
 
-function FavoritesList({favoriteOffers}: FavoritesListProps): JSX.Element {
+function FavoritesList(): JSX.Element | null {
+  const favoriteOffers = useAppSelector(getFavorites);
+
+  if (!favoriteOffers?.length) {
+    return null;
+  }
+
   return (
-    <ul className="favorites__list">
-      {DestinationCities.map((city) => <FavoritesLocationsItems key={city} offersData={favoriteOffers} city={city}/>)}
-    </ul>
+    <>
+      <h1 className="favorites__title">Saved listing</h1>
+      <ul className="favorites__list">
+        {DestinationCities.map((city) => (
+          <FavoritesLocationsItems
+            key={city}
+            offersData={favoriteOffers}
+            city={city}
+          />
+        ))}
+      </ul>
+    </>
   );
 }
 

@@ -1,22 +1,24 @@
-import { Link, useLocation } from 'react-router-dom';
-import { AppRoute } from '../../const';
-import { getRatingPercentage } from '../../utils/utils';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AppRoute, AuthorizationStatus } from '../../const';
+import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
 import { OfferType } from '../../types/offers';
+import { useAppSelector } from '../../hooks';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { memo } from 'react';
 
 type PlaceCardProps = {
   offer: OfferType;
   onCardHover?: (offerId: string) => void;
+  onMouseLeave?: () => void;
 }
 
-function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
+function PlaceCard({offer, onCardHover, onMouseLeave}: PlaceCardProps): JSX.Element {
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const navigate = useNavigate();
   const location = useLocation();
   const offerLink = `${AppRoute.Offer}/${offer.id}`;
 
-  const handleMouseEnter = () => {
-    if (onCardHover) {
-      onCardHover(offer.id);
-    }
-  };
+  const handleMouseEnter = () => onCardHover?.(offer.id);
 
   let articleClassName = 'place-card';
   let divImageClassName = 'place-card__image-wrapper';
@@ -46,6 +48,7 @@ function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
     <article
       className={articleClassName}
       onMouseEnter={handleMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {offer.isPremium ?
         <div className="place-card__mark">
@@ -59,17 +62,18 @@ function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
       <div className="place-card__info">
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
-            <b className="place-card__price-value">{offer.price}</b>
+            <b className="place-card__price-value">€{offer.price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           <button
             className={`
               place-card__bookmark-button
               button
-              ${offer.isFavorite ? 'place-card__bookmark-button--active' : ''}`}
+              ${offer.isFavorite && authorizationStatus === AuthorizationStatus.Auth ? 'place-card__bookmark-button--active' : ''}`}
             type="button"
+            onClick={handleFavoriteClick(offer.id, Number(!offer.isFavorite), authorizationStatus, navigate)}
           >
-            <svg className="place-card__bookmark-icon" width="18" height="19">
+            <svg className="place-card__bookmark-icon" width={18} height={19}>
               <use xlinkHref="#icon-bookmark"></use>
             </svg>
             <span className="visually-hidden">To bookmarks</span>
@@ -90,4 +94,6 @@ function PlaceCard({offer, onCardHover}: PlaceCardProps): JSX.Element {
   );
 }
 
-export default PlaceCard;
+const MemorizedPlaceCard = memo(PlaceCard);
+
+export default MemorizedPlaceCard;

@@ -2,14 +2,20 @@ import { Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logoutAction } from '../../store/api-actions';
+import { getAuthorizationStatus, getUserData } from '../../store/user-process/selectors';
+import { getFavorites } from '../../store/data-precess/selectors';
+import Logo from '../logo/logo';
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const userData = useAppSelector((state) => state.userData);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const favorites = useAppSelector(getFavorites);
+  const favoritesCount = favorites?.length;
+  const userData = useAppSelector(getUserData);
   const email = userData?.email;
   const avatarUrl = userData?.avatarUrl;
   const name = userData?.name;
+  const isAuth = authorizationStatus === AuthorizationStatus.Auth;
 
   const handleLogoutClick = (evt: React.MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
@@ -21,16 +27,11 @@ function Header(): JSX.Element {
       <div className="container">
         <div className="header__wrapper">
           <div className="header__left">
-            <Link
-              to={AppRoute.Root}
-              className="header__logo-link header__logo-link--active"
-            >
-              <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
-            </Link>
+            <Logo />
           </div>
           <nav className="header__nav">
             <ul className="header__nav-list">
-              {authorizationStatus === AuthorizationStatus.Auth ? (
+              { isAuth ? (
                 <>
                   <li className="header__nav-item user">
                     <Link
@@ -44,7 +45,7 @@ function Header(): JSX.Element {
                         />
                       </div>
                       <span className="header__user-name user__name">{email}</span>
-                      <span className="header__favorite-count">3</span>
+                      <span className="header__favorite-count">{favoritesCount}</span>
                     </Link>
                   </li>
                   <li className="header__nav-item">

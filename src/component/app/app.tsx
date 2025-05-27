@@ -11,42 +11,44 @@ import LoadingScreen from '../loading-screen/loading-screen';
 import HistoryRouter from '../history-route/history-route';
 import browserHistory from '../../browser-history';
 import Layout from '../layout/layout';
-import MainLayout from '../layout/main-layout';
-import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { getAuthCheckedStatus, getAuthorizationStatus } from '../../store/user-process/selectors';
 import { getOffersDataLoadingStatus } from '../../store/data-precess/selectors';
 import LoginLayout from '../layout/login-layout';
+import { HelmetProvider } from 'react-helmet-async';
 
 function App(): JSX.Element {
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const isOffersDataLoading = useAppSelector(getOffersDataLoadingStatus);
+  const isAuthChecked = useAppSelector(getAuthCheckedStatus);
 
-  if (isOffersDataLoading) {
+  if (!isAuthChecked || isOffersDataLoading) {
     return (
       <LoadingScreen />
     );
   }
 
   return (
-    <HistoryRouter history={browserHistory}>
-      <Routes>
-        <Route path={AppRoute.Root} element={<MainLayout />}>
-          <Route index element={<MainScreen />}/>
-        </Route>
-        <Route path={AppRoute.Login} element={<LoginLayout />}>
-          <Route index element={<LoginScreen />}/>
-        </Route>
-        <Route element={<Layout />}>
-          <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen />}/>
-          <Route path={AppRoute.Favorites} element={
-            <PrivateRoute authorizationStatus={authorizationStatus}>
-              <FavoritesScreen />
-            </PrivateRoute>
-          }
-          />
-        </Route>
-        <Route path='*' element={<NotFoundScreen />}/>
-      </Routes>
-    </HistoryRouter>
+    <HelmetProvider>
+      <HistoryRouter history={browserHistory}>
+        <Routes>
+          <Route path={AppRoute.Root} element={<MainScreen />}/>
+          <Route path={AppRoute.Login} element={<LoginLayout />}>
+            <Route index element={<LoginScreen />}/>
+          </Route>
+          <Route element={<Layout />}>
+            <Route path={`${AppRoute.Offer}/:id`} element={<OfferScreen />}/>
+            <Route path={AppRoute.Favorites} element={
+              <PrivateRoute authorizationStatus={authorizationStatus}>
+                <FavoritesScreen />
+              </PrivateRoute>
+            }
+            />
+          </Route>
+          <Route path='*' element={<NotFoundScreen />}/>
+        </Routes>
+      </HistoryRouter>
+    </HelmetProvider>
+
   );
 }
 

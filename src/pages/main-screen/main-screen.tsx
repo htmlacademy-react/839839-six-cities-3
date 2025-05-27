@@ -28,8 +28,6 @@ const getSortedOffers = (selectedCityOffers: OffersType, currentSort: string) =>
 
 function MainScreen(): JSX.Element {
   const dispatch = useAppDispatch();
-  // const [searchParams] = useSearchParams();
-  // const searchCityParams = searchParams.get('city') || DestinationCities[0];
   const selectedCityName = useAppSelector(getSelectCity);
   const offersData = useAppSelector(getOffers);
   const currentSort = useAppSelector(getSortOrder);
@@ -60,7 +58,7 @@ function MainScreen(): JSX.Element {
   }, []);
 
   return (
-    <div className="page page--gray page--main" data-testid="main-page">
+    <div className="page page--gray page--main">
       <Header />
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>

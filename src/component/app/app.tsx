@@ -48,7 +48,6 @@ function App(): JSX.Element {
         </Routes>
       </HistoryRouter>
     </HelmetProvider>
-
   );
 }
 

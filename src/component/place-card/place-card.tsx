@@ -62,7 +62,7 @@ function PlaceCard({offer, onCardHover, onMouseLeave}: PlaceCardProps): JSX.Elem
       <div className="place-card__info">
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
-            <b className="place-card__price-value">{offer.price}</b>
+            <b className="place-card__price-value">€{offer.price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           <button

@@ -85,6 +85,7 @@ function ReviewsForm(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const {id} = useParams();
+  const isButtonDisabled = isLoading || review.rating === 0 || review.comment.length < 50 || review.comment.length > 300;
 
   const handleReviewChange: HandleChangeType = (evt) => {
     const {name, value} = evt.currentTarget;
@@ -140,7 +141,7 @@ function ReviewsForm(): JSX.Element {
         <button
           className="reviews__submit form__submit button"
           type="submit"
-          disabled={isLoading || review.rating === 0 || review.comment.length < 50 || review.comment.length > 300}
+          disabled={isButtonDisabled}
         >
           {isLoading ? 'Loading...' : 'Submit'}
         </button>

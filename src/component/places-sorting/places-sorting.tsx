@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 import { SortOrder } from '../../const';
 import { useAppSelector } from '../../hooks';
 import { getSortOrder } from '../../store/app-params/selectors';
@@ -53,4 +53,6 @@ function PlacesSorting({onSortChange}: SortOptionsProps): JSX.Element {
   );
 }
 
-export default PlacesSorting;
+const MemorizedPlacesSorting = memo(PlacesSorting);
+
+export default MemorizedPlacesSorting;

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { OfferType } from '../../types/offers';
 import Map from '../../component/map/map';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import PlacesSorting from '../../component/places-sorting/places-sorting';
+import MemorizedPlacesSorting from '../../component/places-sorting/places-sorting';
 import { SortOrder } from '../../const';
 import { getSelectCity, getSortOrder } from '../../store/app-params/selectors';
 import { getOffers } from '../../store/data-precess/selectors';
@@ -47,6 +47,10 @@ function MainScreen(): JSX.Element {
     setSelectedOffer(currentOffer);
   }, [selectedCityOffers]);
 
+  const handleMouseLeave = useCallback(() => {
+    setSelectedOffer(undefined);
+  }, []);
+
   return (
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>
@@ -58,13 +62,14 @@ function MainScreen(): JSX.Element {
               <section className="cities__places places">
                 <h2 className="visually-hidden">Places</h2>
                 <b className="places__found">{selectedCityOffers.length} place{selectedCityOffers.length > 1 && 's'} to stay in {selectedCityName}</b>
-                <PlacesSorting
+                <MemorizedPlacesSorting
                   onSortChange={handleSortChange}
                 />
 
                 <MemorizedPlaceList
                   offersData={sortedOffers}
                   onListItemHover={handleListItemHover}
+                  onMouseLeave={handleMouseLeave}
                 />
               </section>
               <div className="cities__right-section">

@@ -3,6 +3,7 @@ import { store } from '../store';
 import { fetchFavoritesAction, fetchOfferByIdAction, fetchOffersAction, setFavoriteStatusAction } from '../store/api-actions';
 import { selectCity } from '../store/app-params/app-params';
 import { processErrorHandle } from '../services/process-error-handle';
+import { AppRoute, AuthorizationStatus } from '../const';
 
 const getRatingPercentage = (rating: number): number =>
   Math.round(rating) * 20;
@@ -13,9 +14,17 @@ const handleCityClick = (cityName: string) => () => {
 
 const handleFavoriteClick = (
   offerId: string,
-  status: number
+  status: number,
+  authorizationStatus: AuthorizationStatus,
+  navigate: (path: string) => void,
 ): MouseEventHandler<HTMLButtonElement> => (evt) => {
   evt.preventDefault();
+
+  if (authorizationStatus !== AuthorizationStatus.Auth) {
+    navigate(AppRoute.Login);
+    return;
+  }
+
   store.dispatch(setFavoriteStatusAction([offerId, status]))
     .then(() => {
       store.dispatch(fetchFavoritesAction());

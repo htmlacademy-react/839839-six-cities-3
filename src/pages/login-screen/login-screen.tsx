@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { checkAuthAction, fetchFavoritesAction, loginAction } from '../../store/api-actions';
 import { AppRoute, AuthorizationStatus, DestinationCities } from '../../const';
 import { Link, Navigate } from 'react-router-dom';
-import { handleCityClick } from '../../utils/utils';
+import { getRandomInt, handleCityClick } from '../../utils/utils';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 const PASSWORD_ERROR_TEXT = 'The password must contain at least one letter and one number';
@@ -13,12 +13,12 @@ const PASSWORD_REGEX = {
 };
 
 function LoginScreen(): JSX.Element {
+  const dispatch = useAppDispatch();
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
-  const dispatch = useAppDispatch();
+  const randomCityName = DestinationCities[getRandomInt(0, DestinationCities.length)];
 
   if (authorizationStatus === AuthorizationStatus.Auth) {
     return <Navigate to={AppRoute.Root}/>;
@@ -105,9 +105,9 @@ function LoginScreen(): JSX.Element {
             <Link
               className="locations__item-link"
               to={AppRoute.Root}
-              onClick={handleCityClick(DestinationCities[3])}
+              onClick={handleCityClick(randomCityName)}
             >
-              <span>Amsterdam</span>
+              <span>{randomCityName}</span>
             </Link>
           </div>
         </section>

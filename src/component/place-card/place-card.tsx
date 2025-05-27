@@ -1,5 +1,5 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AppRoute, AuthorizationStatus } from '../../const';
+import { Link, useLocation } from 'react-router-dom';
+import { AppRoute } from '../../const';
 import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
 import { OfferType } from '../../types/offers';
 import { useAppSelector } from '../../hooks';
@@ -14,7 +14,6 @@ type PlaceCardProps = {
 
 function PlaceCard({offer, onCardHover, onMouseLeave}: PlaceCardProps): JSX.Element {
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
-  const navigate = useNavigate();
   const location = useLocation();
   const offerLink = `${AppRoute.Offer}/${offer.id}`;
 
@@ -69,9 +68,9 @@ function PlaceCard({offer, onCardHover, onMouseLeave}: PlaceCardProps): JSX.Elem
             className={`
               place-card__bookmark-button
               button
-              ${offer.isFavorite && authorizationStatus === AuthorizationStatus.Auth ? 'place-card__bookmark-button--active' : ''}`}
+              ${offer.isFavorite ? 'place-card__bookmark-button--active' : ''}`}
             type="button"
-            onClick={handleFavoriteClick(offer.id, Number(!offer.isFavorite), authorizationStatus, navigate)}
+            onClick={handleFavoriteClick(offer.id, Number(!offer.isFavorite), authorizationStatus)}
           >
             <svg className="place-card__bookmark-icon" width={18} height={19}>
               <use xlinkHref="#icon-bookmark"></use>

@@ -1,27 +1,22 @@
 import { MouseEventHandler } from 'react';
 import { store } from '../store';
 import { fetchFavoritesAction, fetchOfferByIdAction, fetchOffersAction, setFavoriteStatusAction } from '../store/api-actions';
-import { selectCity } from '../store/app-params/app-params';
 import { processErrorHandle } from '../services/process-error-handle';
 import { AppRoute, AuthorizationStatus } from '../const';
+import { redirectToRoute } from '../store/action';
 
 const getRatingPercentage = (rating: number): number =>
   Math.round(rating) * 20;
-
-const handleCityClick = (cityName: string) => () => {
-  store.dispatch(selectCity(cityName));
-};
 
 const handleFavoriteClick = (
   offerId: string,
   status: number,
   authorizationStatus: AuthorizationStatus,
-  navigate: (path: string) => void,
 ): MouseEventHandler<HTMLButtonElement> => (evt) => {
   evt.preventDefault();
 
   if (authorizationStatus !== AuthorizationStatus.Auth) {
-    navigate(AppRoute.Login);
+    store.dispatch(redirectToRoute(AppRoute.Login));
     return;
   }
 
@@ -42,4 +37,4 @@ function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (roundedStart - roundedEnd)) + roundedEnd;
 }
 
-export {getRatingPercentage, handleCityClick, handleFavoriteClick, getRandomInt};
+export {getRatingPercentage, handleFavoriteClick, getRandomInt};

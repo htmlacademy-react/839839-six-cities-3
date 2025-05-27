@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { AppRoute, DestinationCities } from '../../const';
 import { OffersType } from '../../types/offers';
-import { useAppSelector } from '../../hooks';
-import { handleCityClick } from '../../utils/utils';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getFavorites } from '../../store/data-precess/selectors';
 import MemorizedPlaceCard from '../place-card/place-card';
+import { selectCity } from '../../store/app-params/app-params';
 
 type FavoritesLocationsItemsProps = {
   offersData: OffersType;
@@ -22,7 +22,13 @@ function FavoritesPlaces({offersData, city}: FavoritesLocationsItemsProps) {
 }
 
 function FavoritesLocationsItems({offersData, city}: FavoritesLocationsItemsProps) {
+  const dispatch = useAppDispatch();
   const isOffer = offersData.find((offer) => offer.city.name === city);
+
+  const handleCityClick = (cityName: string) => () => {
+    dispatch(selectCity(cityName));
+  };
+
   if (isOffer) {
     return (
       <li className="favorites__locations-items" key={city}>

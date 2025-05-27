@@ -3,8 +3,9 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { checkAuthAction, fetchFavoritesAction, loginAction } from '../../store/api-actions';
 import { AppRoute, AuthorizationStatus, DestinationCities } from '../../const';
 import { Link, Navigate } from 'react-router-dom';
-import { getRandomInt, handleCityClick } from '../../utils/utils';
+import { getRandomInt } from '../../utils/utils';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { selectCity } from '../../store/app-params/app-params';
 
 const PASSWORD_ERROR_TEXT = 'The password must contain at least one letter and one number';
 const PASSWORD_REGEX = {
@@ -28,6 +29,10 @@ function LoginScreen(): JSX.Element {
     const hasLetter = PASSWORD_REGEX.LETTER.test(password);
     const hasNumber = PASSWORD_REGEX.NUMBER.test(password);
     return hasLetter && hasNumber;
+  };
+
+  const handleCityClick = (cityName: string) => () => {
+    dispatch(selectCity(cityName));
   };
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {

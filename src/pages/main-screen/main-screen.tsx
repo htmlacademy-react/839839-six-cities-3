@@ -34,14 +34,8 @@ function MainScreen(): JSX.Element {
   const [selectedOffer, setSelectedOffer] = useState<OfferType | undefined>(undefined);
 
   const selectedCityOffers = offersData.filter((offer) => offer.city.name === selectedCityName);
-  const selectedCity = selectedCityOffers[0].city;
+  const selectedCity = selectedCityOffers[0]?.city;
   const placeCount = selectedCityOffers.length;
-
-  if (placeCount === 0) {
-    <EmptyCity />;
-  }
-
-  const sortedOffers = getSortedOffers(selectedCityOffers, currentSort);
 
   const handleSortChange = useCallback((sortType: SortOrder) => {
     dispatch(selectSortOrder(sortType));
@@ -56,6 +50,12 @@ function MainScreen(): JSX.Element {
   const handleMouseLeave = useCallback(() => {
     setSelectedOffer(undefined);
   }, []);
+
+  if (placeCount === 0) {
+    return <EmptyCity />;
+  }
+
+  const sortedOffers = getSortedOffers(selectedCityOffers, currentSort);
 
   return (
     <div className="page page--gray page--main">

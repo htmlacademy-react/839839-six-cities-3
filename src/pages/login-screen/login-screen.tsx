@@ -1,6 +1,6 @@
 import { FormEvent, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { checkAuthAction, fetchFavoritesAction, loginAction } from '../../store/api-actions';
+import { checkAuthAction, fetchFavoritesAction, fetchOffersAction, loginAction } from '../../store/api-actions';
 import { AppRoute, AuthorizationStatus, DestinationCities } from '../../const';
 import { Link, Navigate } from 'react-router-dom';
 import { getRandomInt } from '../../utils/utils';
@@ -53,6 +53,7 @@ function LoginScreen(): JSX.Element {
         .then(() => {
           dispatch(checkAuthAction());
           dispatch(fetchFavoritesAction());
+          dispatch(fetchOffersAction());
         })
         .catch((error) => {
           setPasswordError(String(error));

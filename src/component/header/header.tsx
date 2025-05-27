@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { logoutAction } from '../../store/api-actions';
+import { fetchOffersAction, logoutAction } from '../../store/api-actions';
 import { getAuthorizationStatus, getUserData } from '../../store/user-process/selectors';
 import { getFavorites } from '../../store/data-precess/selectors';
 import Logo from '../logo/logo';
@@ -19,7 +19,10 @@ function Header(): JSX.Element {
 
   const handleLogoutClick = (evt: React.MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
-    dispatch(logoutAction());
+    dispatch(logoutAction())
+      .then(() => {
+        dispatch(fetchOffersAction());
+      });
   };
 
   return (

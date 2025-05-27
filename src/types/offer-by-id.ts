@@ -1,4 +1,4 @@
-import { CityType, LocationType } from './offers';
+import { OfferType } from './offers';
 
 export type User = {
   name: string;
@@ -6,16 +6,7 @@ export type User = {
   isPro: boolean;
 };
 
-export type OfferByIdType = {
-  id: string;
-  title: string;
-  type: string;
-  price: number;
-  city: CityType;
-  location: LocationType;
-  isFavorite: boolean;
-  isPremium: boolean;
-  rating: number;
+export type OfferByIdType = OfferType & {
   description: string;
   bedrooms: number;
   goods: string[];

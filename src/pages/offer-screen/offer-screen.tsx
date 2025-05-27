@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
 import NotFoundScreen from '../not-found-screen/not-found-screen';
 import Reviews from '../../component/reviews/reviews';
@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { fetchNearbyOffersAction, fetchOfferByIdAction } from '../../store/api-actions';
 import { getNearbyOffers, getOfferById, getOffers } from '../../store/data-precess/selectors';
 import MemorizedPlaceCard from '../../component/place-card/place-card';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 const NEARBY_OFFERS_COUNT = 3;
 const OFFER_IMGS_COUNT = 6;
@@ -15,7 +16,9 @@ const OFFER_IMGS_COUNT = 6;
 function OfferScreen (): JSX.Element {
   const dispatch = useAppDispatch();
   const params = useParams();
+  const navigate = useNavigate();
   const currentOfferId = params.id;
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const offerById = useAppSelector(getOfferById);
   const nearbyOffers = useAppSelector(getNearbyOffers);
   const offersData = useAppSelector(getOffers);
@@ -65,7 +68,7 @@ function OfferScreen (): JSX.Element {
               <button
                 className={`offer__bookmark-button button ${offerById.isFavorite ? 'offer__bookmark-button--active' : ''}`}
                 type="button"
-                onClick={handleFavoriteClick(offerById.id, Number(!offerById.isFavorite))}
+                onClick={handleFavoriteClick(offerById.id, Number(!offerById.isFavorite), authorizationStatus, navigate)}
               >
                 <svg className="offer__bookmark-icon" width={31} height={33}>
                   <use xlinkHref="#icon-bookmark"></use>

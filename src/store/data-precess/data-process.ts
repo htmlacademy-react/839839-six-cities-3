@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { NameSpace } from '../../const';
-import { fetchCommentsAction, fetchFavoritesAction, fetchNearbyOffersAction, fetchOfferByIdAction, fetchOffersAction, setFavoriteStatusAction } from '../api-actions';
+import { fetchCommentsAction, fetchFavoritesAction, fetchNearbyOffersAction, fetchOfferByIdAction, fetchOffersAction, postCommentAction, setFavoriteStatusAction } from '../api-actions';
 import { OffersType } from '../../types/offers';
 import { OfferByIdType } from '../../types/offer-by-id';
 import { CommentsType } from '../../types/comments';
@@ -14,6 +14,7 @@ type initialStateType = {
   offerById: OfferByIdType | null;
   nearbyOffers: OffersType;
   comments: CommentsType;
+  isCommentFormDisabled: boolean;
 }
 
 const initialState: initialStateType = {
@@ -24,6 +25,7 @@ const initialState: initialStateType = {
   offerById: null,
   nearbyOffers: [],
   comments: [],
+  isCommentFormDisabled: false,
 };
 
 export const dataProcess = createSlice({
@@ -70,6 +72,13 @@ export const dataProcess = createSlice({
         if (state.offerById?.id === action.payload.id) {
           state.offerById = action.payload;
         }
+      })
+      .addCase(postCommentAction.pending, (state) => {
+        state.isCommentFormDisabled = true;
+      })
+      .addCase(postCommentAction.fulfilled, (state, action) => {
+        state.isCommentFormDisabled = false;
+        state.comments.unshift(action.payload);
       });
   }
 });

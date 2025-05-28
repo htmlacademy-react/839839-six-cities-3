@@ -9,8 +9,7 @@ import { AuthDataType } from '../types/auth-data';
 import { UserDataType } from '../types/user-data';
 import { store } from './index';
 import { OfferByIdType } from '../types/offer-by-id';
-import { CommentsType } from '../types/comments';
-import { FeedbackType } from '../types/feedback';
+import { CommentsType, CommentType, NewCommentType } from '../types/comments';
 
 export const clearErrorAction = createAsyncThunk(
   'clearError',
@@ -124,16 +123,17 @@ export const logoutAction = createAsyncThunk<void, undefined, {
   },
 );
 
-export const postCommentAction = createAsyncThunk<void,
-  [string | undefined, FeedbackType],
+export const postCommentAction = createAsyncThunk<CommentType,
+  NewCommentType,
   {
     dispatch: AppDispatch;
     state: State;
     extra: AxiosInstance;
 }>(
   'data/postComment',
-  async ([offerId, comment], {extra: api}) => {
-    await api.post<FeedbackType>(`${APIRoute.Comments}/${offerId}`, comment);
+  async ({offerId, comment, rating}, {extra: api}) => {
+    const {data} = await api.post<CommentType>(`${APIRoute.Comments}/${offerId}`, {comment, rating});
+    return data;
   }
 );
 

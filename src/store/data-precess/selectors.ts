@@ -11,3 +11,4 @@ export const getError = (state: State): string | null => state[NameSpace.Data].e
 export const getNearbyOffers = (state: State): OffersType => state[NameSpace.Data].nearbyOffers;
 export const getComments = (state: State): CommentsType => state[NameSpace.Data].comments;
 export const getFavorites = (state: State): OffersType => state[NameSpace.Data].favorites;
+export const getCommentFormDisabledStatus = (state: State): boolean => state[NameSpace.Data].isCommentFormDisabled;

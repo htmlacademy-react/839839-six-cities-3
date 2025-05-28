@@ -13,3 +13,9 @@ export type CommentType = {
 };
 
 export type CommentsType = CommentType[];
+
+export type NewCommentType = {
+  offerId: string;
+  comment: string;
+  rating: number;
+}

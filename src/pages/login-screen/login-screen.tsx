@@ -1,3 +1,4 @@
+import './login-screen.css';
 import { FormEvent, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchFavoritesAction, fetchOffersAction, loginAction } from '../../store/api-actions';
@@ -99,7 +100,7 @@ function LoginScreen(): JSX.Element {
               />
             </div>
             {passwordError && (
-              <div className="login__error" style={{color: 'red', margin: '-20px 5px 5px', fontSize: '12px'}}>{passwordError}</div>
+              <div className="login__error">{passwordError}</div>
             )}
             <button
               className="login__submit form__submit button"

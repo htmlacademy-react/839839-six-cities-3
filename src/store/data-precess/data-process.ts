@@ -16,6 +16,7 @@ type initialStateType = {
   comments: CommentsType;
   isCommentFormDisabled: boolean;
   isFavoriteLoading: boolean;
+  isOfferByIdLoading: boolean;
 }
 
 const initialState: initialStateType = {
@@ -28,6 +29,7 @@ const initialState: initialStateType = {
   comments: [],
   isCommentFormDisabled: false,
   isFavoriteLoading: false,
+  isOfferByIdLoading: false,
 };
 
 export const dataProcess = createSlice({
@@ -52,14 +54,25 @@ export const dataProcess = createSlice({
         state.offers = action.payload;
         state.isOffersDataLoading = false;
       })
+      .addCase(fetchOfferByIdAction.pending, (state) => {
+        state.isOfferByIdLoading = true;
+      })
+      .addCase(fetchOfferByIdAction.rejected, (state) => {
+        state.isOfferByIdLoading = false;
+      })
       .addCase(fetchOfferByIdAction.fulfilled, (state, action) => {
         state.offerById = action.payload;
+        state.isOfferByIdLoading = false;
       })
       .addCase(fetchNearbyOffersAction.fulfilled, (state, action) => {
         state.nearbyOffers = action.payload;
       })
+      .addCase(fetchCommentsAction.rejected, (state) => {
+        state.isCommentFormDisabled = false;
+      })
       .addCase(fetchCommentsAction.fulfilled, (state, action) => {
-        state.comments = action.payload;
+        state.comments = action.payload.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        state.isCommentFormDisabled = false;
       })
       .addCase(fetchFavoritesAction.pending, (state) => {
         state.isFavoriteLoading = true;
@@ -73,12 +86,6 @@ export const dataProcess = createSlice({
       })
       .addCase(setError, (state, action) => {
         state.error = action.payload;
-      })
-      .addCase(setFavoriteStatusAction.pending, (state) => {
-        state.isOffersDataLoading = true;
-      })
-      .addCase(setFavoriteStatusAction.rejected, (state) => {
-        state.isOffersDataLoading = false;
       })
       .addCase(setFavoriteStatusAction.fulfilled, (state, action) => {
         const updatedOffer = action.payload;
@@ -95,6 +102,9 @@ export const dataProcess = createSlice({
       .addCase(postCommentAction.fulfilled, (state, action) => {
         state.isCommentFormDisabled = false;
         state.comments.unshift(action.payload);
+      })
+      .addCase(postCommentAction.rejected, (state) => {
+        state.isCommentFormDisabled = false;
       });
   }
 });

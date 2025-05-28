@@ -5,13 +5,16 @@ import Reviews from '../../component/reviews/reviews';
 import Map from '../../component/map/map';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect } from 'react';
-import { fetchNearbyOffersAction, fetchOfferByIdAction, setFavoriteStatusAction } from '../../store/api-actions';
-import { getNearbyOffers, getOfferById, getOffers } from '../../store/data-precess/selectors';
+import { fetchCommentsAction, fetchNearbyOffersAction, fetchOfferByIdAction, fetchOffersAction, setFavoriteStatusAction } from '../../store/api-actions';
+import { getNearbyOffers, getOfferById, getOffers, getOffersDataLoadingStatus } from '../../store/data-precess/selectors';
 import MemorizedPlaceCard from '../../component/place-card/place-card';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { AppRoute, AuthorizationStatus } from '../../const';
 import { redirectToRoute } from '../../store/action';
+import { loadOfferById } from '../../store/data-precess/data-process';
 import { processErrorHandle } from '../../services/process-error-handle';
+import { Helmet } from 'react-helmet-async';
+import LoadingScreen from '../../component/loading-screen/loading-screen';
 
 const NEARBY_OFFERS_COUNT = 3;
 const OFFER_IMGS_COUNT = 6;
@@ -24,14 +27,20 @@ function OfferScreen (): JSX.Element {
   const offerById = useAppSelector(getOfferById);
   const nearbyOffers = useAppSelector(getNearbyOffers);
   const offersData = useAppSelector(getOffers);
+  const isOfferLoading = useAppSelector(getOffersDataLoadingStatus);
   const currentOffer = offersData.find((item) => item.id === currentOfferId);
 
   useEffect(() => {
     if (currentOfferId) {
       dispatch(fetchOfferByIdAction(currentOfferId));
       dispatch(fetchNearbyOffersAction(currentOfferId));
+      dispatch(fetchCommentsAction(currentOfferId));
     }
   }, [dispatch, currentOfferId]);
+
+  if (isOfferLoading) {
+    return <LoadingScreen />;
+  }
 
   if (!offerById || !currentOffer) {
     return <NotFoundScreen />;
@@ -44,25 +53,20 @@ function OfferScreen (): JSX.Element {
       dispatch(redirectToRoute(AppRoute.Login));
       return;
     }
-
-    try {
+    if (offerById) {
       dispatch(setFavoriteStatusAction([
         offerById.id,
         Number(!offerById.isFavorite),
-      ])).unwrap();
-    } catch (error) {
-      processErrorHandle(String(error));
+      ]))
+        .unwrap()
+        .then(() => {
+          dispatch(fetchOffersAction());
+          dispatch(loadOfferById(!offerById.isFavorite));
+        })
+        .catch((error) => {
+          processErrorHandle(String(error));
+        });
     }
-
-    // dispatch(setFavoriteStatusAction([offer.id, Number(!offer.isFavorite)]))
-    //   .then(() => {
-    //     dispatch(fetchFavoritesAction());
-    //     dispatch(fetchOfferByIdAction(offer.id));
-    //     dispatch(fetchOffersAction());
-    //   })
-    //   .catch((error) => {
-    //     processErrorHandle(String(error));
-    //   });
   };
 
   const currentNearbyOffers = nearbyOffers ? nearbyOffers.slice(0, NEARBY_OFFERS_COUNT) : [];
@@ -70,6 +74,9 @@ function OfferScreen (): JSX.Element {
 
   return (
     <main className="page__main page__main--offer">
+      <Helmet>
+        <title>Шесть городов: Предложение</title>
+      </Helmet>
       <section className="offer">
         <div className="offer__gallery-container container">
           <div className="offer__gallery">
@@ -78,7 +85,7 @@ function OfferScreen (): JSX.Element {
                 <img
                   className="offer__image"
                   src={image}
-                  alt="Photo studio"
+                  alt={`Photo ${offerById.type}`}
                 />
               </div>
             ))}

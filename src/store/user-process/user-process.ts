@@ -25,9 +25,10 @@ export const userProcess = createSlice({
       .addCase(loginAction.pending, (state) => {
         state.isLoginFormDisabled = true;
       })
-      .addCase(loginAction.fulfilled, (state) => {
+      .addCase(loginAction.fulfilled, (state, action) => {
         state.authorizationStatus = AuthorizationStatus.Auth;
         state.isLoginFormDisabled = false;
+        state.userData = action.payload;
       })
       .addCase(loginAction.rejected, (state) => {
         state.authorizationStatus = AuthorizationStatus.NoAuth;

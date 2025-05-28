@@ -1,11 +1,12 @@
 import { FormEvent, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { checkAuthAction, fetchFavoritesAction, fetchOffersAction, loginAction } from '../../store/api-actions';
+import { loginAction } from '../../store/api-actions';
 import { AppRoute, AuthorizationStatus, DestinationCities } from '../../const';
 import { Link, Navigate } from 'react-router-dom';
 import { getRandomInt } from '../../utils/utils';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { selectCity } from '../../store/app-params/app-params';
+import { Helmet } from 'react-helmet-async';
 
 const PASSWORD_ERROR_TEXT = 'The password must contain at least one letter and one number';
 const PASSWORD_REGEX = {
@@ -50,11 +51,6 @@ function LoginScreen(): JSX.Element {
 
       dispatch(loginAction({email, password}))
         .unwrap()
-        .then(() => {
-          dispatch(checkAuthAction());
-          dispatch(fetchFavoritesAction());
-          dispatch(fetchOffersAction());
-        })
         .catch((error) => {
           setPasswordError(String(error));
         });
@@ -63,6 +59,9 @@ function LoginScreen(): JSX.Element {
 
   return (
     <main className="page__main page__main--login">
+      <Helmet>
+        <title>Шесть городов: Авторизация</title>
+      </Helmet>
       <div className="page__login-container container">
         <section className="login">
           <h1 className="login__title">Sign in</h1>

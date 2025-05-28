@@ -33,7 +33,7 @@ export const fetchOffersAction = createAsyncThunk<OffersType, undefined, {
   },
 );
 
-export const fetchOfferByIdAction = createAsyncThunk<OfferByIdType, string | undefined, {
+export const fetchOfferByIdAction = createAsyncThunk<OfferByIdType, string, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
@@ -96,7 +96,7 @@ export const checkAuthAction = createAsyncThunk<UserDataType, undefined, {
   },
 );
 
-export const loginAction = createAsyncThunk<void, AuthDataType, {
+export const loginAction = createAsyncThunk<UserDataType, AuthDataType, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
@@ -107,6 +107,7 @@ export const loginAction = createAsyncThunk<void, AuthDataType, {
 
     saveToken(data.token);
     dispatch(redirectToRoute(AppRoute.Root));
+    return data;
   },
 );
 

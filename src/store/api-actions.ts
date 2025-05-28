@@ -51,7 +51,7 @@ export const fetchNearbyOffersAction = createAsyncThunk<OffersType, string, {
   extra: AxiosInstance;
 }>(
   'data/fetchNearbyOffers',
-  async (offerId, {extra: api}) => {
+  async (offerId, { extra: api}) => {
     const {data} = await api.get<OffersType>(`${APIRoute.Offers}/${offerId}/nearby`);
     return data;
   }
@@ -145,10 +145,8 @@ export const setFavoriteStatusAction = createAsyncThunk<OfferByIdType,
     extra: AxiosInstance;
   }>(
     'data/setFavoriteStatus',
-    async ([offerId, status], {dispatch, extra: api }) => {
+    async ([offerId, status], {extra: api }) => {
       const {data} = await api.post<OfferByIdType>(`${APIRoute.Favorite}/${offerId}/${status}`);
-      dispatch(fetchFavoritesAction());
-      dispatch(fetchOffersAction());
       return data;
     }
   );

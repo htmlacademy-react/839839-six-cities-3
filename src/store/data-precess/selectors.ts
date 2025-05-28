@@ -12,3 +12,4 @@ export const getNearbyOffers = (state: State): OffersType => state[NameSpace.Dat
 export const getComments = (state: State): CommentsType => state[NameSpace.Data].comments;
 export const getFavorites = (state: State): OffersType => state[NameSpace.Data].favorites;
 export const getCommentFormDisabledStatus = (state: State): boolean => state[NameSpace.Data].isCommentFormDisabled;
+export const getFavoriteLoadingStatus = (state: State): boolean => state[NameSpace.Data].isFavoriteLoading;

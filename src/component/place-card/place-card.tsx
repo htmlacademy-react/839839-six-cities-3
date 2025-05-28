@@ -7,7 +7,7 @@ import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { memo } from 'react';
 import { processErrorHandle } from '../../services/process-error-handle';
 import { redirectToRoute } from '../../store/action';
-import { setFavoriteStatusAction } from '../../store/api-actions';
+import { fetchOffersAction, setFavoriteStatusAction } from '../../store/api-actions';
 
 type PlaceCardProps = {
   offer: OfferType;
@@ -29,24 +29,17 @@ function PlaceCard({offer, onCardHover, onMouseLeave}: PlaceCardProps): JSX.Elem
       return;
     }
 
-    try {
-      dispatch(setFavoriteStatusAction([
-        offer.id,
-        offer.isFavorite ? 0 : 1
-      ])).unwrap();
-    } catch (error) {
-      processErrorHandle(String(error));
-    }
-
-    // dispatch(setFavoriteStatusAction([offer.id, Number(!offer.isFavorite)]))
-    //   .then(() => {
-    //     dispatch(fetchFavoritesAction());
-    //     dispatch(fetchOfferByIdAction(offer.id));
-    //     dispatch(fetchOffersAction());
-    //   })
-    //   .catch((error) => {
-    //     processErrorHandle(String(error));
-    //   });
+    dispatch(setFavoriteStatusAction([
+      offer.id,
+      offer.isFavorite ? 0 : 1
+    ]))
+      .unwrap()
+      .then(() => {
+        dispatch(fetchOffersAction());
+      })
+      .catch((error) => {
+        processErrorHandle(String(error));
+      });
   };
 
   const handleMouseEnter = () => onCardHover?.(offer.id);

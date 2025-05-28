@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NameSpace } from '../../const';
 import { fetchCommentsAction, fetchFavoritesAction, fetchNearbyOffersAction, fetchOfferByIdAction, fetchOffersAction, postCommentAction, setFavoriteStatusAction } from '../api-actions';
 import { OffersType } from '../../types/offers';
@@ -15,6 +15,7 @@ type initialStateType = {
   nearbyOffers: OffersType;
   comments: CommentsType;
   isCommentFormDisabled: boolean;
+  isFavoriteLoading: boolean;
 }
 
 const initialState: initialStateType = {
@@ -26,16 +27,26 @@ const initialState: initialStateType = {
   nearbyOffers: [],
   comments: [],
   isCommentFormDisabled: false,
+  isFavoriteLoading: false,
 };
 
 export const dataProcess = createSlice({
   name: NameSpace.Data,
   initialState,
-  reducers: {},
+  reducers: {
+    loadOfferById: (state, action: PayloadAction<boolean>) => {
+      if (state.offerById) {
+        state.offerById.isFavorite = action.payload;
+      }
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchOffersAction.pending, (state) => {
         state.isOffersDataLoading = true;
+      })
+      .addCase(fetchOffersAction.rejected, (state) => {
+        state.isOffersDataLoading = false;
       })
       .addCase(fetchOffersAction.fulfilled, (state, action) => {
         state.offers = action.payload;
@@ -50,7 +61,14 @@ export const dataProcess = createSlice({
       .addCase(fetchCommentsAction.fulfilled, (state, action) => {
         state.comments = action.payload;
       })
+      .addCase(fetchFavoritesAction.pending, (state) => {
+        state.isFavoriteLoading = true;
+      })
+      .addCase(fetchFavoritesAction.rejected, (state) => {
+        state.isFavoriteLoading = false;
+      })
       .addCase(fetchFavoritesAction.fulfilled, (state, action) => {
+        state.isFavoriteLoading = false;
         state.favorites = action.payload;
       })
       .addCase(setError, (state, action) => {
@@ -63,14 +81,12 @@ export const dataProcess = createSlice({
         state.isOffersDataLoading = false;
       })
       .addCase(setFavoriteStatusAction.fulfilled, (state, action) => {
-        state.offers = state.offers.map((offer) =>
-          offer.id === action.payload.id ? action.payload : offer
-        );
-        state.nearbyOffers = state.nearbyOffers.map((offer) =>
-          offer.id === action.payload.id ? action.payload : offer
-        );
-        if (state.offerById?.id === action.payload.id) {
-          state.offerById = action.payload;
+        const updatedOffer = action.payload;
+        const index = state.favorites.findIndex((offer) => offer.id === updatedOffer.id);
+        if (index >= 0) {
+          state.favorites.splice(index, 1);
+        } else {
+          state.favorites.push(updatedOffer);
         }
       })
       .addCase(postCommentAction.pending, (state) => {
@@ -82,3 +98,5 @@ export const dataProcess = createSlice({
       });
   }
 });
+
+export const { loadOfferById } = dataProcess.actions;

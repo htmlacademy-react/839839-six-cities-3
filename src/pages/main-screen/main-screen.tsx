@@ -13,6 +13,7 @@ import Header from '../../component/header/header';
 
 import EmptyCity from '../../component/empty-city/empty-city';
 import { useSearchParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const getSortedOffers = (selectedCityOffers: OffersType, currentSort: string) => {
   switch (currentSort) {
@@ -69,6 +70,9 @@ function MainScreen(): JSX.Element {
 
   return (
     <div className="page page--gray page--main">
+      <Helmet>
+        <title>Шесть городов. Главная</title>
+      </Helmet>
       <Header />
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>

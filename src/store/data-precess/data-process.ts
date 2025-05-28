@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { NameSpace } from '../../const';
-import { fetchCommentsAction, fetchFavoritesAction, fetchNearbyOffersAction, fetchOfferByIdAction, fetchOffersAction } from '../api-actions';
+import { fetchCommentsAction, fetchFavoritesAction, fetchNearbyOffersAction, fetchOfferByIdAction, fetchOffersAction, setFavoriteStatusAction } from '../api-actions';
 import { OffersType } from '../../types/offers';
 import { OfferByIdType } from '../../types/offer-by-id';
 import { CommentsType } from '../../types/comments';
@@ -53,6 +53,23 @@ export const dataProcess = createSlice({
       })
       .addCase(setError, (state, action) => {
         state.error = action.payload;
+      })
+      .addCase(setFavoriteStatusAction.pending, (state) => {
+        state.isOffersDataLoading = true;
+      })
+      .addCase(setFavoriteStatusAction.rejected, (state) => {
+        state.isOffersDataLoading = false;
+      })
+      .addCase(setFavoriteStatusAction.fulfilled, (state, action) => {
+        state.offers = state.offers.map((offer) =>
+          offer.id === action.payload.id ? action.payload : offer
+        );
+        state.nearbyOffers = state.nearbyOffers.map((offer) =>
+          offer.id === action.payload.id ? action.payload : offer
+        );
+        if (state.offerById?.id === action.payload.id) {
+          state.offerById = action.payload;
+        }
       });
   }
 });

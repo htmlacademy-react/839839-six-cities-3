@@ -1,14 +1,17 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
+import { useParams } from 'react-router-dom';
+import { getRatingPercentage } from '../../utils/utils';
 import NotFoundScreen from '../not-found-screen/not-found-screen';
 import Reviews from '../../component/reviews/reviews';
 import Map from '../../component/map/map';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect } from 'react';
-import { fetchNearbyOffersAction, fetchOfferByIdAction } from '../../store/api-actions';
+import { fetchNearbyOffersAction, fetchOfferByIdAction, setFavoriteStatusAction } from '../../store/api-actions';
 import { getNearbyOffers, getOfferById, getOffers } from '../../store/data-precess/selectors';
 import MemorizedPlaceCard from '../../component/place-card/place-card';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { AppRoute, AuthorizationStatus } from '../../const';
+import { redirectToRoute } from '../../store/action';
+import { processErrorHandle } from '../../services/process-error-handle';
 
 const NEARBY_OFFERS_COUNT = 3;
 const OFFER_IMGS_COUNT = 6;
@@ -16,7 +19,6 @@ const OFFER_IMGS_COUNT = 6;
 function OfferScreen (): JSX.Element {
   const dispatch = useAppDispatch();
   const params = useParams();
-  const navigate = useNavigate();
   const currentOfferId = params.id;
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const offerById = useAppSelector(getOfferById);
@@ -34,6 +36,34 @@ function OfferScreen (): JSX.Element {
   if (!offerById || !currentOffer) {
     return <NotFoundScreen />;
   }
+
+  const handleFavoriteClick = (evt: React.MouseEvent<HTMLButtonElement>) => {
+    evt.preventDefault();
+
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      dispatch(redirectToRoute(AppRoute.Login));
+      return;
+    }
+
+    try {
+      dispatch(setFavoriteStatusAction([
+        offerById.id,
+        Number(!offerById.isFavorite),
+      ])).unwrap();
+    } catch (error) {
+      processErrorHandle(String(error));
+    }
+
+    // dispatch(setFavoriteStatusAction([offer.id, Number(!offer.isFavorite)]))
+    //   .then(() => {
+    //     dispatch(fetchFavoritesAction());
+    //     dispatch(fetchOfferByIdAction(offer.id));
+    //     dispatch(fetchOffersAction());
+    //   })
+    //   .catch((error) => {
+    //     processErrorHandle(String(error));
+    //   });
+  };
 
   const currentNearbyOffers = nearbyOffers ? nearbyOffers.slice(0, NEARBY_OFFERS_COUNT) : [];
   const nearbyOffersPlusCurrent = [currentOffer, ...currentNearbyOffers];
@@ -68,7 +98,7 @@ function OfferScreen (): JSX.Element {
               <button
                 className={`offer__bookmark-button button ${offerById.isFavorite ? 'offer__bookmark-button--active' : ''}`}
                 type="button"
-                onClick={handleFavoriteClick(offerById.id, Number(!offerById.isFavorite), authorizationStatus, navigate)}
+                onClick={handleFavoriteClick}
               >
                 <svg className="offer__bookmark-icon" width={31} height={33}>
                   <use xlinkHref="#icon-bookmark"></use>

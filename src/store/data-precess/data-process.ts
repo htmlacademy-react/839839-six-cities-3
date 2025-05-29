@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NameSpace } from '../../const';
 import { fetchCommentsAction, fetchFavoritesAction, fetchNearbyOffersAction, fetchOfferByIdAction, fetchOffersAction, postCommentAction, setFavoriteStatusAction } from '../api-actions';
-import { OffersType } from '../../types/offers';
+import { OffersType, OfferType } from '../../types/offers';
 import { OfferByIdType } from '../../types/offer-by-id';
 import { CommentsType } from '../../types/comments';
 import { setError } from '../action';
@@ -40,6 +40,18 @@ export const dataProcess = createSlice({
       if (state.offerById) {
         state.offerById.isFavorite = action.payload;
       }
+    },
+    updateCards: (state, action: PayloadAction<OfferType>) => {
+      const toggleFavorite = (offers: OffersType | undefined) => {
+        offers?.forEach((item) => {
+          if (item.id === action.payload.id) {
+            item.isFavorite = !action.payload.isFavorite;
+          }
+        });
+      };
+
+      toggleFavorite(state.nearbyOffers);
+      toggleFavorite(state.offers);
     },
   },
   extraReducers(builder) {
@@ -109,4 +121,4 @@ export const dataProcess = createSlice({
   }
 });
 
-export const { loadOfferById } = dataProcess.actions;
+export const { loadOfferById, updateCards } = dataProcess.actions;

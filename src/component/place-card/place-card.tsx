@@ -7,7 +7,8 @@ import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { memo } from 'react';
 import { processErrorHandle } from '../../services/process-error-handle';
 import { redirectToRoute } from '../../store/action';
-import { fetchFavoritesAction, fetchOffersAction, setFavoriteStatusAction } from '../../store/api-actions';
+import { setFavoriteStatusAction } from '../../store/api-actions';
+import { updateCards } from '../../store/data-precess/data-process';
 
 type PlaceCardProps = {
   offer: OfferType;
@@ -35,8 +36,7 @@ function PlaceCard({offer, onCardHover, onMouseLeave}: PlaceCardProps): JSX.Elem
     ]))
       .unwrap()
       .then(() => {
-        dispatch(fetchOffersAction());
-        dispatch(fetchFavoritesAction());
+        dispatch(updateCards(offer));
       })
       .catch((error) => {
         processErrorHandle(String(error));

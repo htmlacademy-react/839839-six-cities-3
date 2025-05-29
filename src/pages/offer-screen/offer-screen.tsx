@@ -5,13 +5,13 @@ import Reviews from '../../component/reviews/reviews';
 import Map from '../../component/map/map';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect } from 'react';
-import { fetchCommentsAction, fetchNearbyOffersAction, fetchOfferByIdAction, fetchOffersAction, setFavoriteStatusAction } from '../../store/api-actions';
+import { fetchCommentsAction, fetchNearbyOffersAction, fetchOfferByIdAction, setFavoriteStatusAction } from '../../store/api-actions';
 import { getNearbyOffers, getOfferById, getOfferByIdLoadingStatus, getOffers } from '../../store/data-precess/selectors';
 import MemorizedPlaceCard from '../../component/place-card/place-card';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { AppRoute, AuthorizationStatus } from '../../const';
 import { redirectToRoute } from '../../store/action';
-import { loadOfferById } from '../../store/data-precess/data-process';
+import { loadOfferById, updateCards } from '../../store/data-precess/data-process';
 import { processErrorHandle } from '../../services/process-error-handle';
 import { Helmet } from 'react-helmet-async';
 import LoadingScreen from '../../component/loading-screen/loading-screen';
@@ -60,7 +60,7 @@ function OfferScreen (): JSX.Element {
       ]))
         .unwrap()
         .then(() => {
-          dispatch(fetchOffersAction());
+          dispatch(updateCards(offerById));
           dispatch(loadOfferById(!offerById.isFavorite));
         })
         .catch((error) => {
@@ -174,7 +174,7 @@ function OfferScreen (): JSX.Element {
                 </p>
               </div>
             </div>
-            <Reviews offerId={offerById.id} />
+            <Reviews />
           </div>
         </div>
         <section className="offer__map map">

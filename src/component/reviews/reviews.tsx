@@ -1,32 +1,18 @@
-import { useEffect } from 'react';
 import { AuthorizationStatus } from '../../const';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppSelector } from '../../hooks';
 import ReviewsForm from '../review-form/review-form';
 import ReviewsList from '../reviews-list/reviews-list';
-import { fetchCommentsAction } from '../../store/api-actions';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { getComments } from '../../store/data-precess/selectors';
 
-const MAX_REVIEWS_COUNT = 10;
+const MIN_COMMENTS_COUNT = 0;
+const MAX_COMMENTS_COUNT = 10;
 
-type ReviewsProps = {
-  offerId: string;
-}
-
-function Reviews({offerId}: ReviewsProps): JSX.Element {
-  const dispatch = useAppDispatch();
+function Reviews(): JSX.Element {
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const commentsOffers = useAppSelector(getComments);
 
-  useEffect(() => {
-    if (offerId) {
-      dispatch(fetchCommentsAction(offerId));
-    }
-  }, [dispatch, offerId]);
-
-  const displayedComments = [...commentsOffers]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, MAX_REVIEWS_COUNT);
+  const displayedComments = commentsOffers.slice(MIN_COMMENTS_COUNT, MAX_COMMENTS_COUNT);
 
   return (
     <section className="offer__reviews reviews">

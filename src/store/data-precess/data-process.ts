@@ -4,7 +4,6 @@ import { fetchCommentsAction, fetchFavoritesAction, fetchNearbyOffersAction, fet
 import { OffersType, OfferType } from '../../types/offers';
 import { OfferByIdType } from '../../types/offer-by-id';
 import { CommentsType } from '../../types/comments';
-import { setError } from '../action';
 
 type initialStateType = {
   offers: OffersType;
@@ -95,9 +94,6 @@ export const dataProcess = createSlice({
       .addCase(fetchFavoritesAction.fulfilled, (state, action) => {
         state.isFavoriteLoading = false;
         state.favorites = action.payload;
-      })
-      .addCase(setError, (state, action) => {
-        state.error = action.payload;
       })
       .addCase(setFavoriteStatusAction.fulfilled, (state, action) => {
         const updatedOffer = action.payload;

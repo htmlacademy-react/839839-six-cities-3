@@ -23,7 +23,7 @@ function Header(): JSX.Element {
     evt.preventDefault();
     dispatch(logoutAction())
       .then(() => {
-        dispatch(fetchOffersAction);
+        dispatch(fetchOffersAction());
       });
   };
 

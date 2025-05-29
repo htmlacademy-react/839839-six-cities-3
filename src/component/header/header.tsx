@@ -3,7 +3,7 @@ import { AppRoute, AuthorizationStatus } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchOffersAction, logoutAction } from '../../store/api-actions';
 import { getAuthCheckedStatus, getAuthorizationStatus, getUserData } from '../../store/user-process/selectors';
-import { getFavorites } from '../../store/data-precess/selectors';
+import { getFavorites, getFavoritesLength } from '../../store/data-precess/selectors';
 import Logo from '../logo/logo';
 
 function Header(): JSX.Element {
@@ -11,7 +11,8 @@ function Header(): JSX.Element {
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const isAuthChecked = useAppSelector(getAuthCheckedStatus);
   const favorites = useAppSelector(getFavorites);
-  const favoritesCount = favorites?.length;
+  const favoritesLength = useAppSelector(getFavoritesLength);
+  const favoritesCount = favoritesLength || favorites?.length;
   const userData = useAppSelector(getUserData);
   const email = userData?.email;
   const avatarUrl = userData?.avatarUrl;

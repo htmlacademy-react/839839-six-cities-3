@@ -13,3 +13,8 @@ export const getComments = (state: State): CommentsType => state[NameSpace.Data]
 export const getFavorites = (state: State): OffersType => state[NameSpace.Data].favorites;
 export const getCommentFormDisabledStatus = (state: State): boolean => state[NameSpace.Data].isCommentFormDisabled;
 export const getFavoriteLoadingStatus = (state: State): boolean => state[NameSpace.Data].isFavoriteLoading;
+
+export const getFavoritesLength = (state: State): number => {
+  const offers = state[NameSpace.Data]?.offers || [];
+  return offers.filter((item) => item.isFavorite).length;
+};

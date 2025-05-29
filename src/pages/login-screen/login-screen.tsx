@@ -1,7 +1,7 @@
 import './login-screen.css';
 import { FormEvent, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchFavoritesAction, fetchOffersAction, loginAction } from '../../store/api-actions';
+import { fetchOffersAction, loginAction } from '../../store/api-actions';
 import { AppRoute, AuthorizationStatus, DestinationCities } from '../../const';
 import { Link, Navigate } from 'react-router-dom';
 import { getRandomInt } from '../../utils/utils';
@@ -53,7 +53,6 @@ function LoginScreen(): JSX.Element {
       dispatch(loginAction({email, password}))
         .unwrap()
         .then(() => {
-          dispatch(fetchFavoritesAction());
           dispatch(fetchOffersAction());
         })
         .catch((error) => {

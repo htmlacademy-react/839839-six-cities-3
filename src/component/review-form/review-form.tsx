@@ -79,8 +79,8 @@ function ReviewsForm(): JSX.Element {
         setRating(DEFAULT_RATING);
         formRef.current?.reset();
       })
-      .catch((error) => {
-        processErrorHandle(String(error));
+      .catch(() => {
+        processErrorHandle('Failed to submit your review. Please try again.');
       })
       .finally(() => {
         setIsLoading(false);

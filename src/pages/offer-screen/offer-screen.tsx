@@ -6,7 +6,7 @@ import Map from '../../component/map/map';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { fetchCommentsAction, fetchNearbyOffersAction, fetchOfferByIdAction, fetchOffersAction, setFavoriteStatusAction } from '../../store/api-actions';
-import { getNearbyOffers, getOfferById, getOffers, getOffersDataLoadingStatus } from '../../store/data-precess/selectors';
+import { getNearbyOffers, getOfferById, getOfferByIdLoadingStatus, getOffers } from '../../store/data-precess/selectors';
 import MemorizedPlaceCard from '../../component/place-card/place-card';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { AppRoute, AuthorizationStatus } from '../../const';
@@ -27,7 +27,7 @@ function OfferScreen (): JSX.Element {
   const offerById = useAppSelector(getOfferById);
   const nearbyOffers = useAppSelector(getNearbyOffers);
   const offersData = useAppSelector(getOffers);
-  const isOfferLoading = useAppSelector(getOffersDataLoadingStatus);
+  const isOfferLoading = useAppSelector(getOfferByIdLoadingStatus);
   const currentOffer = offersData.find((item) => item.id === currentOfferId);
 
   useEffect(() => {

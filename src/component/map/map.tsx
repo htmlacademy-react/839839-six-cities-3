@@ -41,8 +41,8 @@ function Map({location, points, selectedPoint}: MapProps): JSX.Element {
       points.forEach((point) => {
         leaflet
           .marker({
-            lat: point.location.latitude,
-            lng: point.location.longitude,
+            lat: point?.location?.latitude,
+            lng: point?.location?.longitude,
           }, {
             icon: (point.id === selectedPoint?.id)
               ? currentCustomIcon
@@ -50,7 +50,7 @@ function Map({location, points, selectedPoint}: MapProps): JSX.Element {
           })
           .addTo(markerLayer.current!);
       });
-      map.setView([location.latitude, location.longitude], location.zoom);
+      map.setView([location?.latitude, location?.longitude], location.zoom);
     }
   }, [map, points, selectedPoint, location]);
 

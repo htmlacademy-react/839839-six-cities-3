@@ -29,7 +29,7 @@ export enum TileLayerParam {
 
 export enum UrlMarker {
   Default = './img/pin.svg',
-  Current = './img/pin-active.svg'
+  Current = 'pin-active.svg'
 }
 
 export enum SortOrder {

@@ -6,7 +6,7 @@ import Map from '../../component/map/map';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect } from 'react';
 import { fetchCommentsAction, fetchNearbyOffersAction, fetchOfferByIdAction, setFavoriteStatusAction } from '../../store/api-actions';
-import { getNearbyOffers, getOfferById, getOfferByIdLoadingStatus, getOffers } from '../../store/data-precess/selectors';
+import { getComments, getNearbyOffers, getOfferById, getOfferByIdLoadingStatus, getOffers } from '../../store/data-precess/selectors';
 import MemorizedPlaceCard from '../../component/place-card/place-card';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { AppRoute, AuthorizationStatus } from '../../const';
@@ -29,20 +29,27 @@ function OfferScreen (): JSX.Element {
   const offersData = useAppSelector(getOffers);
   const isOfferByIdLoading = useAppSelector(getOfferByIdLoadingStatus);
   const currentOffer = offersData.find((item) => item.id === currentOfferId);
+  const comment = useAppSelector(getComments);
 
   useEffect(() => {
     if (currentOfferId) {
-      dispatch(fetchOfferByIdAction(currentOfferId));
-      dispatch(fetchNearbyOffersAction(currentOfferId));
-      dispatch(fetchCommentsAction(currentOfferId));
+      if (!offerById) {
+        dispatch(fetchOfferByIdAction(currentOfferId));
+      }
+      if (!nearbyOffers.length) {
+        dispatch(fetchNearbyOffersAction(currentOfferId));
+      }
+      if (!comment.length) {
+        dispatch(fetchCommentsAction(currentOfferId));
+      }
     }
-  }, [dispatch, currentOfferId]);
+  }, [dispatch, currentOfferId, nearbyOffers, offerById, comment]);
 
   if (isOfferByIdLoading) {
     return <LoadingScreen />;
   }
 
-  if (!offerById || !currentOffer) {
+  if (!offerById) {
     return <NotFoundScreen />;
   }
 
@@ -70,7 +77,11 @@ function OfferScreen (): JSX.Element {
   };
 
   const currentNearbyOffers = nearbyOffers ? nearbyOffers.slice(0, NEARBY_OFFERS_COUNT) : [];
-  const nearbyOffersPlusCurrent = [currentOffer, ...currentNearbyOffers];
+  const nearbyOffersPlusCurrent = [...currentNearbyOffers];
+
+  if (currentOffer) {
+    nearbyOffersPlusCurrent.unshift(currentOffer);
+  }
 
   return (
     <main className="page__main page__main--offer">
@@ -80,15 +91,27 @@ function OfferScreen (): JSX.Element {
       <section className="offer">
         <div className="offer__gallery-container container">
           <div className="offer__gallery">
-            {offerById.images.slice(0, OFFER_IMGS_COUNT).map((image) => (
-              <div key={image} className="offer__image-wrapper">
-                <img
-                  className="offer__image"
-                  src={image}
-                  alt={`Photo ${offerById.type}`}
-                />
-              </div>
-            ))}
+            {/* <div className="offer__image-wrapper">
+              <img
+                className="offer__image"
+                src={''}
+                alt={`Photo `}
+              />
+            </div> */}
+            {offerById.images.map((image, index) => {
+              if (index < OFFER_IMGS_COUNT) {
+                return (
+                  <div key={image} className="offer__image-wrapper">
+                    <img
+                      className="offer__image"
+                      src={image}
+                      alt={`Photo ${offerById.type}`}
+                    />
+                  </div>);
+              } else {
+                return null;
+              }
+            })}
           </div>
         </div>
         <div className="offer__container container">
@@ -164,9 +187,11 @@ function OfferScreen (): JSX.Element {
                 <span className="offer__user-name">
                   {offerById.host.name}
                 </span>
-                <span className="offer__user-status">
-                  {offerById.host.isPro ? 'Pro' : ''}
-                </span>
+                {
+                  offerById.host.isPro ?
+                    <span className="offer__user-status">Pro </span>
+                    : null
+                }
               </div>
               <div className="offer__description">
                 <p className="offer__text">

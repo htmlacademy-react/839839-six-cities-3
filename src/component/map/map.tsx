@@ -41,8 +41,8 @@ function Map({location, points, selectedPoint}: MapProps): JSX.Element {
       points.forEach((point) => {
         leaflet
           .marker({
-            lat: point?.location?.latitude,
-            lng: point?.location?.longitude,
+            lat: point.location.latitude,
+            lng: point.location.longitude,
           }, {
             icon: (point.id === selectedPoint?.id)
               ? currentCustomIcon

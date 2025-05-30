@@ -1,4 +1,3 @@
-import { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -13,8 +12,7 @@ function LocationItem({location}: LocationItemProps): JSX.Element {
   const dispatch = useAppDispatch();
   const selectedCityName = useAppSelector(getSelectCity);
 
-  const handleLocationItemClick = (evt: MouseEvent<HTMLAnchorElement>) => {
-    evt.preventDefault();
+  const handleLocationItemClick = () => {
     dispatch(selectCity(location));
   };
 
@@ -22,7 +20,7 @@ function LocationItem({location}: LocationItemProps): JSX.Element {
     <li className="locations__item">
       <Link
         className={`locations__item-link tabs__item ${location === selectedCityName ? 'tabs__item--active' : ''}`}
-        to={AppRoute.Root}
+        to={`${AppRoute.Root}?city=${location}`}
         onClick={handleLocationItemClick}
       >
         <span>{location}</span>

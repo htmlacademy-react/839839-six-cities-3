@@ -9,8 +9,7 @@ import { AuthDataType } from '../types/auth-data';
 import { UserDataType } from '../types/user-data';
 import { store } from './index';
 import { OfferByIdType } from '../types/offer-by-id';
-import { CommentsType } from '../types/comments';
-import { FeedbackType } from '../types/feedback';
+import { CommentsType, CommentType, NewCommentType } from '../types/comments';
 
 export const clearErrorAction = createAsyncThunk(
   'clearError',
@@ -34,7 +33,7 @@ export const fetchOffersAction = createAsyncThunk<OffersType, undefined, {
   },
 );
 
-export const fetchOfferByIdAction = createAsyncThunk<OfferByIdType, string | undefined, {
+export const fetchOfferByIdAction = createAsyncThunk<OfferByIdType, string, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
@@ -52,7 +51,7 @@ export const fetchNearbyOffersAction = createAsyncThunk<OffersType, string, {
   extra: AxiosInstance;
 }>(
   'data/fetchNearbyOffers',
-  async (offerId, {extra: api}) => {
+  async (offerId, { extra: api}) => {
     const {data} = await api.get<OffersType>(`${APIRoute.Offers}/${offerId}/nearby`);
     return data;
   }
@@ -97,7 +96,7 @@ export const checkAuthAction = createAsyncThunk<UserDataType, undefined, {
   },
 );
 
-export const loginAction = createAsyncThunk<void, AuthDataType, {
+export const loginAction = createAsyncThunk<UserDataType, AuthDataType, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
@@ -108,6 +107,7 @@ export const loginAction = createAsyncThunk<void, AuthDataType, {
 
     saveToken(data.token);
     dispatch(redirectToRoute(AppRoute.Root));
+    return data;
   },
 );
 
@@ -123,21 +123,22 @@ export const logoutAction = createAsyncThunk<void, undefined, {
   },
 );
 
-export const postCommentAction = createAsyncThunk<void,
-  [string | undefined, FeedbackType],
+export const postCommentAction = createAsyncThunk<CommentType,
+  NewCommentType,
   {
     dispatch: AppDispatch;
     state: State;
     extra: AxiosInstance;
 }>(
   'data/postComment',
-  async ([offerId, comment], {extra: api}) => {
-    await api.post<FeedbackType>(`${APIRoute.Comments}/${offerId}`, comment);
+  async ({offerId, comment, rating}, {extra: api}) => {
+    const {data} = await api.post<CommentType>(`${APIRoute.Comments}/${offerId}`, {comment, rating});
+    return data;
   }
 );
 
-export const setFavoriteStatusAction = createAsyncThunk<void,
-  [string | undefined, number],
+export const setFavoriteStatusAction = createAsyncThunk<OfferByIdType,
+  [string, number],
   {
     dispatch: AppDispatch;
     state: State;
@@ -145,6 +146,7 @@ export const setFavoriteStatusAction = createAsyncThunk<void,
   }>(
     'data/setFavoriteStatus',
     async ([offerId, status], {extra: api }) => {
-      await api.post<OfferByIdType>(`${APIRoute.Favorite}/${offerId}/${status}`);
+      const {data} = await api.post<OfferByIdType>(`${APIRoute.Favorite}/${offerId}/${status}`);
+      return data;
     }
   );

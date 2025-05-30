@@ -11,3 +11,11 @@ export const getError = (state: State): string | null => state[NameSpace.Data].e
 export const getNearbyOffers = (state: State): OffersType => state[NameSpace.Data].nearbyOffers;
 export const getComments = (state: State): CommentsType => state[NameSpace.Data].comments;
 export const getFavorites = (state: State): OffersType => state[NameSpace.Data].favorites;
+export const getCommentFormDisabledStatus = (state: State): boolean => state[NameSpace.Data].isCommentFormDisabled;
+export const getFavoriteLoadingStatus = (state: State): boolean => state[NameSpace.Data].isFavoriteLoading;
+export const getOfferByIdLoadingStatus = (state: State): boolean => state[NameSpace.Data].isOfferByIdLoading;
+
+export const getFavoritesLength = (state: State): number => {
+  const offers = state[NameSpace.Data]?.offers || [];
+  return offers.filter((item) => item.isFavorite).length;
+};

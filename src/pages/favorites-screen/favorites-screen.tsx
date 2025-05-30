@@ -1,17 +1,35 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import FavoritesList from '../../component/favorites-list/favorites-list';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import FavoritesEmpty from '../../component/favorites-empty/favorites-empty';
-import { getFavorites } from '../../store/data-precess/selectors';
+import { getFavoriteLoadingStatus, getFavorites } from '../../store/data-precess/selectors';
+import LoadingScreen from '../../component/loading-screen/loading-screen';
+import { useEffect } from 'react';
+import { fetchFavoritesAction } from '../../store/api-actions';
+import { Helmet } from 'react-helmet-async';
 
 function FavoritesScreen(): JSX.Element {
+  const dispatch = useAppDispatch();
   const favorites = useAppSelector(getFavorites);
+  const isFavoriteLoading = useAppSelector(getFavoriteLoadingStatus);
   const hasNoFavorites = favorites?.length === 0;
   const mainFavoritesEmptyClass = hasNoFavorites ? 'page__main--favorites-empty' : '';
   const sectionFavoritesEmptyClass = hasNoFavorites ? 'favorites--empty' : '';
+
+  useEffect(() => {
+    dispatch(fetchFavoritesAction());
+  }, [dispatch]);
+
+  if (isFavoriteLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <>
+      <Helmet>
+        <title>Шесть городов. Избранное</title>
+      </Helmet>
       <main className={`page__main page__main--favorites ${mainFavoritesEmptyClass}`}>
         <div className="page__favorites-container container">
           <section className={`favorites ${sectionFavoritesEmptyClass}`}>

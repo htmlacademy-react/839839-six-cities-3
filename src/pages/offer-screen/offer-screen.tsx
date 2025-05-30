@@ -1,14 +1,20 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
+import { useParams } from 'react-router-dom';
+import { getRatingPercentage } from '../../utils/utils';
 import NotFoundScreen from '../not-found-screen/not-found-screen';
 import Reviews from '../../component/reviews/reviews';
 import Map from '../../component/map/map';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect } from 'react';
-import { fetchNearbyOffersAction, fetchOfferByIdAction } from '../../store/api-actions';
-import { getNearbyOffers, getOfferById, getOffers } from '../../store/data-precess/selectors';
+import { fetchCommentsAction, fetchNearbyOffersAction, fetchOfferByIdAction, setFavoriteStatusAction } from '../../store/api-actions';
+import { getComments, getNearbyOffers, getOfferById, getOfferByIdLoadingStatus, getOffers } from '../../store/data-precess/selectors';
 import MemorizedPlaceCard from '../../component/place-card/place-card';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { AppRoute, AuthorizationStatus } from '../../const';
+import { redirectToRoute } from '../../store/action';
+import { loadOfferById, updateCards } from '../../store/data-precess/data-process';
+import { processErrorHandle } from '../../services/process-error-handle';
+import { Helmet } from 'react-helmet-async';
+import LoadingScreen from '../../component/loading-screen/loading-screen';
 
 const NEARBY_OFFERS_COUNT = 3;
 const OFFER_IMGS_COUNT = 6;
@@ -16,42 +22,96 @@ const OFFER_IMGS_COUNT = 6;
 function OfferScreen (): JSX.Element {
   const dispatch = useAppDispatch();
   const params = useParams();
-  const navigate = useNavigate();
   const currentOfferId = params.id;
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const offerById = useAppSelector(getOfferById);
   const nearbyOffers = useAppSelector(getNearbyOffers);
   const offersData = useAppSelector(getOffers);
+  const isOfferByIdLoading = useAppSelector(getOfferByIdLoadingStatus);
   const currentOffer = offersData.find((item) => item.id === currentOfferId);
+  const comment = useAppSelector(getComments);
 
   useEffect(() => {
     if (currentOfferId) {
-      dispatch(fetchOfferByIdAction(currentOfferId));
-      dispatch(fetchNearbyOffersAction(currentOfferId));
+      if (!offerById) {
+        dispatch(fetchOfferByIdAction(currentOfferId));
+      }
+      if (!nearbyOffers.length) {
+        dispatch(fetchNearbyOffersAction(currentOfferId));
+      }
+      if (!comment.length) {
+        dispatch(fetchCommentsAction(currentOfferId));
+      }
     }
-  }, [dispatch, currentOfferId]);
+  }, [dispatch, currentOfferId, nearbyOffers, offerById, comment]);
 
-  if (!offerById || !currentOffer) {
+  if (isOfferByIdLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (!offerById) {
     return <NotFoundScreen />;
   }
 
+  const handleFavoriteClick = (evt: React.MouseEvent<HTMLButtonElement>) => {
+    evt.preventDefault();
+
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      dispatch(redirectToRoute(AppRoute.Login));
+      return;
+    }
+    if (offerById) {
+      dispatch(setFavoriteStatusAction([
+        offerById.id,
+        Number(!offerById.isFavorite),
+      ]))
+        .unwrap()
+        .then(() => {
+          dispatch(updateCards(offerById));
+          dispatch(loadOfferById(!offerById.isFavorite));
+        })
+        .catch((error) => {
+          processErrorHandle(String(error));
+        });
+    }
+  };
+
   const currentNearbyOffers = nearbyOffers ? nearbyOffers.slice(0, NEARBY_OFFERS_COUNT) : [];
-  const nearbyOffersPlusCurrent = [currentOffer, ...currentNearbyOffers];
+  const nearbyOffersPlusCurrent = [...currentNearbyOffers];
+
+  if (currentOffer) {
+    nearbyOffersPlusCurrent.unshift(currentOffer);
+  }
 
   return (
     <main className="page__main page__main--offer">
+      <Helmet>
+        <title>Шесть городов: Предложение</title>
+      </Helmet>
       <section className="offer">
         <div className="offer__gallery-container container">
           <div className="offer__gallery">
-            {offerById.images.slice(0, OFFER_IMGS_COUNT).map((image) => (
-              <div key={image} className="offer__image-wrapper">
-                <img
-                  className="offer__image"
-                  src={image}
-                  alt="Photo studio"
-                />
-              </div>
-            ))}
+            {/* <div className="offer__image-wrapper">
+              <img
+                className="offer__image"
+                src={''}
+                alt={`Photo `}
+              />
+            </div> */}
+            {offerById.images.map((image, index) => {
+              if (index < OFFER_IMGS_COUNT) {
+                return (
+                  <div key={image} className="offer__image-wrapper">
+                    <img
+                      className="offer__image"
+                      src={image}
+                      alt={`Photo ${offerById.type}`}
+                    />
+                  </div>);
+              } else {
+                return null;
+              }
+            })}
           </div>
         </div>
         <div className="offer__container container">
@@ -68,7 +128,7 @@ function OfferScreen (): JSX.Element {
               <button
                 className={`offer__bookmark-button button ${offerById.isFavorite ? 'offer__bookmark-button--active' : ''}`}
                 type="button"
-                onClick={handleFavoriteClick(offerById.id, Number(!offerById.isFavorite), authorizationStatus, navigate)}
+                onClick={handleFavoriteClick}
               >
                 <svg className="offer__bookmark-icon" width={31} height={33}>
                   <use xlinkHref="#icon-bookmark"></use>
@@ -127,9 +187,11 @@ function OfferScreen (): JSX.Element {
                 <span className="offer__user-name">
                   {offerById.host.name}
                 </span>
-                <span className="offer__user-status">
-                  {offerById.host.isPro ? 'Pro' : ''}
-                </span>
+                {
+                  offerById.host.isPro ?
+                    <span className="offer__user-status">Pro </span>
+                    : null
+                }
               </div>
               <div className="offer__description">
                 <p className="offer__text">
@@ -137,7 +199,7 @@ function OfferScreen (): JSX.Element {
                 </p>
               </div>
             </div>
-            <Reviews offerId={offerById.id} />
+            <Reviews />
           </div>
         </div>
         <section className="offer__map map">

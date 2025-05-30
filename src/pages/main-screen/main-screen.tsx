@@ -1,17 +1,19 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { OffersType, OfferType } from '../../types/offers';
 import Map from '../../component/map/map';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import MemorizedPlacesSorting from '../../component/places-sorting/places-sorting';
-import { SortOrder } from '../../const';
+import { DestinationCities, SortOrder } from '../../const';
 import { getSelectCity, getSortOrder } from '../../store/app-params/selectors';
 import { getOffers } from '../../store/data-precess/selectors';
-import { selectSortOrder } from '../../store/app-params/app-params';
+import { selectCity, selectSortOrder } from '../../store/app-params/app-params';
 import MemorizedPlaceList from '../../component/place-list/place-list';
 import MemorizedCitiesList from '../../component/cities-list/cities-list';
 import Header from '../../component/header/header';
 
 import EmptyCity from '../../component/empty-city/empty-city';
+import { useSearchParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const getSortedOffers = (selectedCityOffers: OffersType, currentSort: string) => {
   switch (currentSort) {
@@ -27,21 +29,24 @@ const getSortedOffers = (selectedCityOffers: OffersType, currentSort: string) =>
 };
 
 function MainScreen(): JSX.Element {
+  const [searchParams] = useSearchParams();
+  const cityFromUrl = searchParams.get('city');
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (cityFromUrl && DestinationCities.includes(cityFromUrl)) {
+      dispatch(selectCity(cityFromUrl));
+    }
+  }, [cityFromUrl, dispatch]);
+
   const selectedCityName = useAppSelector(getSelectCity);
   const offersData = useAppSelector(getOffers);
   const currentSort = useAppSelector(getSortOrder);
   const [selectedOffer, setSelectedOffer] = useState<OfferType | undefined>(undefined);
 
   const selectedCityOffers = offersData.filter((offer) => offer.city.name === selectedCityName);
-  const selectedCity = selectedCityOffers[0].city;
+  const selectedCity = selectedCityOffers[0]?.city;
   const placeCount = selectedCityOffers.length;
-
-  if (placeCount === 0) {
-    <EmptyCity />;
-  }
-
-  const sortedOffers = getSortedOffers(selectedCityOffers, currentSort);
 
   const handleSortChange = useCallback((sortType: SortOrder) => {
     dispatch(selectSortOrder(sortType));
@@ -57,8 +62,17 @@ function MainScreen(): JSX.Element {
     setSelectedOffer(undefined);
   }, []);
 
+  if (placeCount === 0) {
+    return <EmptyCity />;
+  }
+
+  const sortedOffers = getSortedOffers(selectedCityOffers, currentSort);
+
   return (
     <div className="page page--gray page--main">
+      <Helmet>
+        <title>Шесть городов. Главная</title>
+      </Helmet>
       <Header />
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>

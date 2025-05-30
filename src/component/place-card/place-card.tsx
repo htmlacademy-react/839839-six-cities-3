@@ -1,10 +1,14 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const';
-import { getRatingPercentage, handleFavoriteClick } from '../../utils/utils';
+import { getRatingPercentage } from '../../utils/utils';
 import { OfferType } from '../../types/offers';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { memo } from 'react';
+import { processErrorHandle } from '../../services/process-error-handle';
+import { redirectToRoute } from '../../store/action';
+import { setFavoriteStatusAction } from '../../store/api-actions';
+import { updateCards } from '../../store/data-precess/data-process';
 
 type PlaceCardProps = {
   offer: OfferType;
@@ -13,10 +17,31 @@ type PlaceCardProps = {
 }
 
 function PlaceCard({offer, onCardHover, onMouseLeave}: PlaceCardProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
-  const navigate = useNavigate();
   const location = useLocation();
   const offerLink = `${AppRoute.Offer}/${offer.id}`;
+
+  const handleFavoriteClick = (evt: React.MouseEvent<HTMLButtonElement>) => {
+    evt.preventDefault();
+
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      dispatch(redirectToRoute(AppRoute.Login));
+      return;
+    }
+
+    dispatch(setFavoriteStatusAction([
+      offer.id,
+      offer.isFavorite ? 0 : 1
+    ]))
+      .unwrap()
+      .then(() => {
+        dispatch(updateCards(offer));
+      })
+      .catch((error) => {
+        processErrorHandle(String(error));
+      });
+  };
 
   const handleMouseEnter = () => onCardHover?.(offer.id);
 
@@ -69,9 +94,9 @@ function PlaceCard({offer, onCardHover, onMouseLeave}: PlaceCardProps): JSX.Elem
             className={`
               place-card__bookmark-button
               button
-              ${offer.isFavorite && authorizationStatus === AuthorizationStatus.Auth ? 'place-card__bookmark-button--active' : ''}`}
+              ${offer.isFavorite ? 'place-card__bookmark-button--active' : ''}`}
             type="button"
-            onClick={handleFavoriteClick(offer.id, Number(!offer.isFavorite), authorizationStatus, navigate)}
+            onClick={handleFavoriteClick}
           >
             <svg className="place-card__bookmark-icon" width={18} height={19}>
               <use xlinkHref="#icon-bookmark"></use>

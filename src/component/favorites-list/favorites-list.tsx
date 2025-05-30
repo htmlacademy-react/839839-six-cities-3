@@ -1,67 +1,47 @@
 import { Link } from 'react-router-dom';
-import { AppRoute, DestinationCities } from '../../const';
-import { OffersType } from '../../types/offers';
-import { useAppSelector } from '../../hooks';
-import { handleCityClick } from '../../utils/utils';
+import { AppRoute } from '../../const';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getFavorites } from '../../store/data-precess/selectors';
 import MemorizedPlaceCard from '../place-card/place-card';
-
-type FavoritesLocationsItemsProps = {
-  offersData: OffersType;
-  city: string;
-}
-
-function FavoritesPlaces({offersData, city}: FavoritesLocationsItemsProps) {
-  return (
-    offersData.filter((offer) => offer.city.name === city).map((offer) => (
-      <MemorizedPlaceCard
-        key={offer.id}
-        offer={offer}
-      />))
-  );
-}
-
-function FavoritesLocationsItems({offersData, city}: FavoritesLocationsItemsProps) {
-  const isOffer = offersData.find((offer) => offer.city.name === city);
-  if (isOffer) {
-    return (
-      <li className="favorites__locations-items" key={city}>
-        <div className="favorites__locations locations locations--current">
-          <div className="locations__item">
-            <Link
-              className="locations__item-link"
-              to={AppRoute.Root}
-              onClick={handleCityClick(city)}
-            >
-              <span>{city}</span>
-            </Link>
-          </div>
-        </div>
-        <div className="favorites__places">
-          <FavoritesPlaces offersData={offersData} city={city}/>
-        </div>
-      </li>
-    );
-  }
-}
+import { selectCity } from '../../store/app-params/app-params';
 
 function FavoritesList(): JSX.Element | null {
+  const dispatch = useAppDispatch();
   const favoriteOffers = useAppSelector(getFavorites);
+  const citiesWithFavorites = Array.from(new Set(favoriteOffers.map((offer) => offer.city.name)));
 
-  if (!favoriteOffers?.length) {
-    return null;
-  }
+  const handleCityClick = (cityName: string) => () => {
+    dispatch(selectCity(cityName));
+  };
+
 
   return (
     <>
       <h1 className="favorites__title">Saved listing</h1>
       <ul className="favorites__list">
-        {DestinationCities.map((city) => (
-          <FavoritesLocationsItems
-            key={city}
-            offersData={favoriteOffers}
-            city={city}
-          />
+        {citiesWithFavorites.map((city) => (
+          <li className="favorites__locations-items" key={city}>
+            <div className="favorites__locations locations locations--current">
+              <div className="locations__item">
+                <Link
+                  className="locations__item-link"
+                  to={`${AppRoute.Root}?city=${city}`}
+                  onClick={handleCityClick(city)}
+                >
+                  <span>{city}</span>
+                </Link>
+              </div>
+            </div>
+            <div className="favorites__places">
+              {favoriteOffers.map((offer) => (
+                offer.city.name === city ?
+                  <MemorizedPlaceCard
+                    key={offer.id}
+                    offer={offer}
+                  /> : null
+              ))}
+            </div>
+          </li>
         ))}
       </ul>
     </>
